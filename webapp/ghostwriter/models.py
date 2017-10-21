@@ -49,6 +49,7 @@ class Lecture(models.Model):
     title = models.CharField("タイトル", max_length=255)
     day_of_week = models.IntegerField("曜日", choices=__days_of_week)
     period = models.IntegerField('時限', choices=__periods)
+    ocr_text = models.TextField("OCR")
 
     def __str__(self):
         return self.title
