@@ -2,14 +2,37 @@ import cv2
 import time
 
 
+class SlideCaptureError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
 class SlideCapture:
 
-    def __init__(self, dev_id: int=0):
+    def __init__(self, dev_id: int=cv2.CAP_ANY):
         """
         カメラのIDを指定する．内臓カメラはだいたい0に設定されているので，webカメラを使いたい場合は1にする．
         今回使うカメラの解像度は1920*1080なので，640*360にリサイズする．
         :param dev_id: カメラのID
         """
+        self.dev_id = dev_id
+        self.cap = cv2.VideoCapture(self.dev_id)
+        self.cap_open_check()
+
+    def cap_open_check(self):
+        if not self.cap.isOpened():
+            raise SlideCaptureError('camera is not opened!')
+
+    def open(self, dev_id: int=cv2.CAP_ANY):
+        """
+        カメラに再接続
+        :param dev_id:
+        :return:
+        """
+        self.cap.release()
         self.dev_id = dev_id
         self.cap = cv2.VideoCapture(self.dev_id)
 
@@ -27,14 +50,23 @@ class SlideCapture:
         :return: TF
         """
 
-        if not self.cap.isOpened():
-            print('[error] cannot open camera')
-            return False
-
+        self.cap_open_check()
         ret, frame = self.cap.read()
         if not ret:
-            print('[error] cannot read frame')
-            return False
+            raise SlideCaptureError('cannot read frame')
+
+        # マーカー
+        height = frame.shape[0]
+        width = frame.shape[1]
+        cv2.rectangle(frame,    # 枠
+                      (int(width * 1/8), int(height * 1/8)),(int(width * 7/8), int(height * 7/8)),
+                      (0, 0, 255), 10)
+        cv2.line(frame,         # 縦線
+                 (int(width / 2), int(height * 7/16)),(int(width / 2), int(height * 9/16)),
+                 (0, 0, 255), 10)
+        cv2.line(frame,         # 横線
+                 (int(width * 9/20), int(height / 2)), (int(width * 11/20), int(height / 2)),
+                 (0, 0, 255), 10)
 
         cv2.imwrite(cache_path + '/calibration.jpg', frame)
 
@@ -46,10 +78,10 @@ class SlideCapture:
         :return:
         """
 
+        self.cap_open_check()
         ret, frame = self.cap.read()
         if not ret:
-            print('[error] cannot read frame')
-            return False
+            raise SlideCaptureError('cannot read frame')
 
         # グレースケール
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
@@ -81,9 +113,7 @@ class SlideCapture:
         :return:
         """
 
-        if not self.cap.isOpened():
-            print('[error] cannot open camera')
-            return False
+        self.cap_open_check()
 
         # スライドのだいたいの位置を特定
         slide_position = self.get_slide_position()
@@ -91,8 +121,7 @@ class SlideCapture:
         while True:
             ret, frame = self.cap.read()
             if not ret:
-                print('[error] cannot read frame')
-                continue
+                raise SlideCaptureError('cannot read frame')
 
             # TODO: スライド部分をトリミング
 
@@ -117,6 +146,9 @@ class SlideCapture:
         :param img_size:
         :return:
         """
+
+        self.cap_open_check()
+
         print('start camera test.')
         print('press esc key for quit.')
         print('press s key for save image')
@@ -124,6 +156,8 @@ class SlideCapture:
         while True:
             # retは画像を取得成功フラグ
             ret, frame = self.cap.read()
+            if not ret:
+                raise SlideCaptureError('cannot read frame')
 
             # 表示
             frame = cv2.resize(frame, img_size)
@@ -147,26 +181,24 @@ class SlideCapture:
         video = cv2.VideoWriter(filename, fourcc, fps, size)
 
         is_record = False
-        while self.cap.isOpened():
+        self.cap_open_check()
+        while True:
             ret, frame = self.cap.read()
+            if not ret:
+                raise SlideCaptureError('cannot read frame')
 
-            if ret:
-                show_frame = cv2.resize(frame, (640, 360))
-                cv2.imshow('frame', show_frame)
-                if is_record:
-                    video.write(frame)
+            show_frame = cv2.resize(frame, (640, 360))
+            cv2.imshow('frame', show_frame)
+            if is_record:
+                video.write(frame)
 
-                k = cv2.waitKey(1)
-                if k == ord('s'):
-                    print('start record')
-                    is_record = True
-                elif k == ord('q'):
-                    print('finish record')
-                    is_record = False
-                    break
-
-            else:
-                print('[error] cannot read camera')
+            k = cv2.waitKey(1)
+            if k == ord('s'):
+                print('start record')
+                is_record = True
+            elif k == ord('q'):
+                print('finish record')
+                is_record = False
                 break
 
         video.release()
@@ -176,14 +208,15 @@ class SlideCapture:
         video = cv2.VideoCapture(filename, 0)
         time.sleep(2)
 
-        while video.isOpened():
+        self.cap_open_check()
+        while True:
 
             ret, frame = video.read()
-            if ret:
-                frame = cv2.resize(frame, (640, 360))
-                cv2.imshow('video', frame)
-            else:
-                break
+            if not ret:
+                raise SlideCaptureError('cannot read frame')
+
+            frame = cv2.resize(frame, (640, 360))
+            cv2.imshow('video', frame)
 
             k = cv2.waitKey(1)
             if k == ord('q'):
