@@ -36,6 +36,9 @@ class SlideCapture:
         self.th_area = threshold_area
         self.th_bin = threshold_bin
 
+        # for pinto
+        time.sleep(5)
+
     def __enter__(self):
         return self
 
@@ -65,6 +68,7 @@ class SlideCapture:
         if self.video_cap:
             self.video_cap.release()
         self.cap.release()
+        print('capture closed')
 
     def calibration(self, cache_path:str ='./media/cache'):
         """
@@ -231,9 +235,9 @@ class SlideCapture:
             out_frame = cv2.resize(frame, (640, 360))
             cv2.imshow('camera capture', bin_trim_frame)
 
-            k = cv2.waitKey(1)                  # 1msec待つ
-            if k != -1:                         # 何か押したら終了
-                break
+            # k = cv2.waitKey(1)                  # 1msec待つ
+            # if k != -1:                         # 何か押したら終了
+            #     break
 
         cv2.destroyAllWindows()
 
