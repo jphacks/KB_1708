@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Ghostwriter{% endblock %}
+
+{% block content %}
+	<div id="fh5co-portfolio">
+    <div class="container">
+        <div class="row animate-boc">
+        <ul class="list-group">
+            <a class="list-group-item" href="{% url 'ghostwriter:lectures' item.pk %}">
+                <h1 class="list-group-item-heading">{{ item.title }}</h1>
+                <p class="list-group-item-text">day of week: {{ item.get_day_of_week_display }} period: {{ item.get_period_display }}</p>
+            </a>
+        </ul>
+        </div>
+    </div>
+    </div>
+{% endblock %}
