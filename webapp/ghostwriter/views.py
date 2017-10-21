@@ -18,7 +18,7 @@ class IndexView(TemplateView):
     def post(self, request, *args, **kwards):
         lec_id = request.POST["lecture"]
         lecture = Lecture.objects.get(id=lec_id)
-        obj_ids = request.POST["images"]
+        obj_ids = request.POST.getlist("images")
         for i in obj_ids:
             image = Image.objects.get(id=i)
             image.lecture = lecture
