@@ -40,4 +40,7 @@ title="supported by goo">
 [ここ](https://apps-gcp-tokyo.appspot.com/gcp-startup/)を参考にAPI Keyを発行する．
 
 ### 使用方法
-一応ライブラリとサンプルプログラム作ったので見てなんとなく使い方察して
+一応ライブラリとサンプルプログラム作ったので見てなんとなく使い方察して．
+
+ライブラリは[ここ](https://gist.github.com/dannguyen/a0b69c84ebc00c54c94d#file-cloudvisreq-py-L62)
+を~~パクリ~~参考にして作りました．
