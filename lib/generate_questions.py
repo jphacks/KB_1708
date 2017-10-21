@@ -1,6 +1,6 @@
 # coding: utf-8
 
-def whatIs(keyword: str) -> str:
+def what_is(keyword: str) -> str:
     question = keyword + "の定義を答えよ"
     return question
 
@@ -15,12 +15,12 @@ def calculate(keyword: str) -> str:
     return question
 
 
-def whoDidCreate(keyword: str) -> str:
+def who_did_create(keyword: str) -> str:
     question = keyword + "は誰が考案したか？"
     return question
 
 
-def whatIsSynonymOf(keyword: str) -> str:
+def what_is_synonym_of(keyword: str) -> str:
     question = keyword + "の類義語は何か"
     return question
 
@@ -33,7 +33,7 @@ class QuestionGeneratorOfKeywords():
     def __init__(self, keywords: [str]):
         self.keywords = keywords
 
-    def createQuestionsWith(self, keyword: str) -> [str]:
+    def create_questions_with(self, keyword: str) -> [str]:
         '''
         抽出したキーワードに文章を付加して問題文を生成する
         生成した問題文を”リスト”で返すことに注意
@@ -42,11 +42,11 @@ class QuestionGeneratorOfKeywords():
         :return questions:　生成した問題文
         '''
         questions = []
-        questions.append(whatIs(keyword))
+        questions.append(what_is(keyword))
         questions.append(explain(keyword))
         questions.append(calculate(keyword))
-        questions.append(whoDidCreate(keyword))
-        questions.append(whatIsSynonymOf(keyword))
+        questions.append(who_did_create(keyword))
+        questions.append(what_is_synonym_of(keyword))
 
         return questions
 
