@@ -13,7 +13,8 @@ class SlideCaptureError(Exception):
 
 class SlideCapture:
 
-    def __init__(self, dev_id: int=cv2.CAP_ANY, video_filename:str =None, threshold_area: int =5000, threshold_bin: int =120):
+    def __init__(self, dev_id: int=cv2.CAP_ANY, video_filename:str =None,
+                 threshold_area: int =5000, threshold_bin: int =120, threshold_diff: int =400):
         """
         カメラのIDを指定する．内臓カメラはだいたい0に設定されているので，webカメラを使いたい場合は1にする．
         今回使うカメラの解像度は1920*1080なので，640*360にリサイズする．
@@ -35,6 +36,7 @@ class SlideCapture:
         # threshold params
         self.th_area = threshold_area
         self.th_bin = threshold_bin
+        self.th_diff = threshold_diff
 
         # for pinto
         time.sleep(5)
@@ -223,7 +225,7 @@ class SlideCapture:
             diff = p_frame.astype(np.int) - frame.astype(np.int)
             # diff_weight = np.mean(np.abs(diff))         # 平均絶対誤差
             diff_weight = np.mean(np.square(diff))    # 平均二乗誤差
-            if diff_weight > 400:
+            if diff_weight > self.th_diff:
                 cv2.imwrite(save_dir+'/'+str(num_save)+'.jpg', frame)
                 num_save += 1
 
