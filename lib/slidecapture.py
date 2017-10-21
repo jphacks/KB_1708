@@ -1,10 +1,12 @@
 import cv2
+import time
 
 
 class SlideCapture:
     def __init__(self, dev_id: int=0):
         """
         カメラのIDを指定する．内臓カメラはだいたい0に設定されているので，webカメラを使いたい場合は1にする．
+        今回使うカメラの解像度は1920*1080
         :param dev_id: カメラのID
         """
         self.dev_id = dev_id
@@ -36,6 +38,58 @@ class SlideCapture:
                 print('image \'test_frame/jpg\' saved.')
 
         # キャプチャを解放する
+        cv2.destroyAllWindows()
+
+    def record_video(self, filename: str):
+        fps = 30
+        size = (int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+        video = cv2.VideoWriter(filename, fourcc, fps, (640, 360))
+
+        is_record = False
+        while self.cap.isOpened():
+            ret, frame = self.cap.read()
+
+            if ret:
+                frame = cv2.resize(frame, (640, 360))
+                cv2.imshow('frame', frame)
+                if is_record:
+                    video.write(frame)
+
+                k = cv2.waitKey(1)
+                if k == ord('s'):
+                    print('start record')
+                    is_record = True
+                elif k == ord('q'):
+                    print('finish record')
+                    is_record = False
+                    break
+
+            else:
+                print('[error] cannot read camera')
+                break
+
+        video.release()
+        cv2.destroyAllWindows()
+
+    def play_video(self, filename: str):
+        video = cv2.VideoCapture(filename, 0)
+        time.sleep(2)
+
+        while video.isOpened():
+
+            ret, frame = video.read()
+            if ret:
+                cv2.imshow('video', frame)
+            else:
+                break
+
+            k = cv2.waitKey(1)
+            if k == ord('q'):
+                break
+
+        video.release()
         cv2.destroyAllWindows()
 
     def monitor_slides(self):
