@@ -20,6 +20,26 @@ class SlideCapture:
         """
         self.cap.release()
 
+    def calibration(self, cache_path:str ='./media/cache'):
+        """
+        画像を一枚取得してキャッシュディレクトリに'calibration.jpg'として保存する．
+        :param cache_path: キャッシュディレクトリのパス
+        :return: TF
+        """
+
+        if not self.cap.isOpened():
+            print('[error] cannot open camera')
+            return False
+
+        ret, frame = self.cap.read()
+        if not ret:
+            print('[error] cannot read frame')
+            return False
+
+        cv2.imwrite(cache_path + '/calibration.jpg', frame)
+
+        return True
+
     def get_slide_position(self):
         """
         画像からスライドの位置を特定してその座標，大きさを返す．
