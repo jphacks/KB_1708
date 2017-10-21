@@ -55,6 +55,19 @@ class SlideCapture:
         if not ret:
             raise SlideCaptureError('cannot read frame')
 
+        # マーカー
+        height = frame.shape[0]
+        width = frame.shape[1]
+        cv2.rectangle(frame,    # 枠
+                      (int(width * 1/8), int(height * 1/8)),(int(width * 7/8), int(height * 7/8)),
+                      (0, 0, 255), 10)
+        cv2.line(frame,         # 縦線
+                 (int(width / 2), int(height * 7/16)),(int(width / 2), int(height * 9/16)),
+                 (0, 0, 255), 10)
+        cv2.line(frame,         # 横線
+                 (int(width * 9/20), int(height / 2)), (int(width * 11/20), int(height / 2)),
+                 (0, 0, 255), 10)
+
         cv2.imwrite(cache_path + '/calibration.jpg', frame)
 
         return True
