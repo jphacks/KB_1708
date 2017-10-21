@@ -8,17 +8,19 @@ class SlideCapture:
         :param dev_id: カメラのID
         """
         self.dev_id = dev_id
+        self.cap = cv2.VideoCapture(self.dev_id)
+
+    def release_camera(self):
+        self.cap.release()
 
     def camera_test(self, img_size=(800, 600)):
         print('start camera test.')
         print('press esc key for quit.')
         print('press s key for save image')
 
-        cap = cv2.VideoCapture(self.dev_id)
-
         while True:
             # retは画像を取得成功フラグ
-            ret, frame = cap.read()
+            ret, frame = self.cap.read()
 
             # フレームをリサイズ
             frame = cv2.resize(frame, img_size)
@@ -34,19 +36,17 @@ class SlideCapture:
                 print('image \'test_frame/jpg\' saved.')
 
         # キャプチャを解放する
-        cap.release()
         cv2.destroyAllWindows()
 
     def monitor_slides(self):
 
-        cap = cv2.VideoCapture(self.dev_id)
-        if not cap.isOpened():
+        if not self.cap.isOpened():
             print('[error] cannot open camera')
             return False
 
         while True:
             # retは画像を取得成功フラグ
-            ret, frame = cap.read()
+            ret, frame = self.cap.read()
             if not ret:
                 print('[error] cannot read frame')
                 continue
@@ -82,5 +82,4 @@ class SlideCapture:
                 break
 
         # キャプチャを解放する
-        cap.release()
         cv2.destroyAllWindows()
