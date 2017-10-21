@@ -50,6 +50,9 @@ class Lecture(models.Model):
     day_of_week = models.IntegerField("曜日", choices=__days_of_week)
     period = models.IntegerField('時限', choices=__periods)
 
+    def __str__(self):
+        return self.title
+
 
 class Image(models.Model):
     title = models.CharField("タイトル", max_length=255)
