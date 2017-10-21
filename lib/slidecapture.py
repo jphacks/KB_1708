@@ -13,12 +13,21 @@ class SlideCaptureError(Exception):
 
 class SlideCapture:
 
-    def __init__(self, dev_id: int=cv2.CAP_ANY):
+    def __init__(self, dev_id: int=cv2.CAP_ANY, video_filename:str =None):
         """
         カメラのIDを指定する．内臓カメラはだいたい0に設定されているので，webカメラを使いたい場合は1にする．
         今回使うカメラの解像度は1920*1080なので，640*360にリサイズする．
         :param dev_id: カメラのID
+        :param video_filename: ログのvideoでテストするときに使う
         """
+
+        # video capture init
+        if video_filename:
+            self.video_cap = cv2.VideoCapture(video_filename, 0)
+        else:
+            self.video_cap = None
+
+        # camera capture init
         self.dev_id = dev_id
         self.cap = cv2.VideoCapture(self.dev_id)
         self.cap_open_check()
@@ -42,6 +51,8 @@ class SlideCapture:
         カメラリソースを解放する．なるべく最後に呼んで．
         :return:
         """
+        if self.video_cap:
+            self.video_cap.release()
         self.cap.release()
 
     def calibration(self, cache_path:str ='./media/cache'):
@@ -76,11 +87,17 @@ class SlideCapture:
     def get_slide_position(self, filename:str =None):
         """
         画像からスライドの位置を特定してその座標，大きさを返す．
+        :param filename: ログの画像からデバッグするときに使う
         :return:
         """
 
         if filename:        # for debug
             frame = cv2.imread(filename)
+
+        elif self.video_cap:        # for debug
+            ret, frame = self.video_cap.read()
+            if not ret:
+                raise SlideCaptureError('cannot read frame')
 
         else:
             self.cap_open_check()
@@ -105,19 +122,7 @@ class SlideCapture:
                 if len(approx) < 4:
                     continue
                 approxs.append(approx)
-                cv2.drawContours(frame, approx, -1, (255, 0, 0), 30)     # for debug
-
-        # for debug
-        # frame = cv2.resize(frame, (640, 360))
-        # cv2.imshow('slide', frame)
-        # print(len(approxs))
-        # for approx in approxs:
-        #     print(type(approx), approx)
-        # while True:
-        #     k = cv2.waitKey(1)
-        #     if k == ord('q'):
-        #         break
-        # cv2.destroyAllWindows()
+                cv2.drawContours(frame, approx, -1, (255, 0, 0), 15)     # for debug
 
         # 一番スライドっぽいのを抽出(より中心に近いものを？)
         # 中心は960, 540のはず
@@ -135,7 +140,19 @@ class SlideCapture:
             if np.linalg.norm(m_cndd) < np.linalg.norm(u_ans):
                 id_ans = i
 
+        # for debug
+        # out_frame = cv2.resize(frame, (640, 360))
+        # cv2.imshow('camera capture', out_frame)
+        # print(len(approxs))
+        # for approx in approxs:
+        #     print(type(approx), approx)
+        # while True:
+        #     k = cv2.waitKey(1)
+        #     if k == ord('q'):
+        #         break
+        # cv2.destroyAllWindows()
         # print(approxs[id_ans])
+
         return approxs[id_ans]
 
     def monitor_slides(self):
@@ -145,30 +162,41 @@ class SlideCapture:
         """
 
         self.cap_open_check()
+        # cv2.namedWindow("camera capture", cv2.WINDOW_KEEPRATIO | cv2.WINDOW_NORMAL)     # for debug
 
         # スライドのだいたいの位置を特定
         slide_position = self.get_slide_position()
+        trim_from_x = np.min(slide_position, axis=0)[0][0]
+        trim_from_y = np.min(slide_position, axis=0)[0][1]
+        trim_to_x = np.max(slide_position, axis=0)[0][0]
+        trim_to_y = np.max(slide_position, axis=0)[0][1]
 
         while True:
-            ret, frame = self.cap.read()
+
+            if self.video_cap:          # for debug (from log video file)
+                ret, frame = self.video_cap.read()
+            else:
+                ret, frame = self.cap.read()
+
             if not ret:
                 raise SlideCaptureError('cannot read frame')
 
-            # TODO: スライド部分をトリミング
+            # スライド部分をトリミング
+            trim_frame = frame[trim_from_y:trim_to_y, trim_from_x:trim_to_x]
 
             # TODO: 人などのノイズを検知
 
             # TODO: スライドの差分を検知, 保存
 
             # 表示
+            # cv2.drawContours(frame, slide_position, -1, (255, 0, 0), 30)    # for debug
             out_frame = cv2.resize(frame, (640, 360))
-            cv2.imshow('camera capture', out_frame)
+            cv2.imshow('camera capture', trim_frame)
 
             k = cv2.waitKey(1)                  # 1msec待つ
             if k != -1:                         # 何か押したら終了
                 break
 
-        # キャプチャを解放する
         cv2.destroyAllWindows()
 
     def camera_test(self, img_size=(640, 360)):
@@ -181,12 +209,12 @@ class SlideCapture:
         self.cap_open_check()
 
         print('start camera test.')
-        print('press esc key for quit.')
-        print('press s key for save image')
+        print('\'esc\' : quit')
+        print('\'s\' : save image')
 
         num_jpg = 0
         while True:
-            # retは画像を取得成功フラグ
+
             ret, frame = self.cap.read()
             if not ret:
                 raise SlideCaptureError('cannot read frame')
@@ -203,7 +231,6 @@ class SlideCapture:
                 num_jpg += 1
                 print('image \'test_frame.jpg\' saved.')
 
-        # キャプチャを解放する
         cv2.destroyAllWindows()
 
     def record_video(self, filename: str):
@@ -212,6 +239,9 @@ class SlideCapture:
                 int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
         video = cv2.VideoWriter(filename, fourcc, fps, size)
+
+        print('\'s\' : start recording.')
+        print('\'q\' : stop recoding and save video')
 
         is_record = False
         self.cap_open_check()
@@ -252,7 +282,7 @@ class SlideCapture:
             cv2.imshow('video', frame)
 
             k = cv2.waitKey(1)
-            if k == ord('q'):
+            if k == ord('q'):           # quit
                 break
 
         video.release()
