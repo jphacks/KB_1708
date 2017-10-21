@@ -13,7 +13,7 @@ class SlideCaptureError(Exception):
 
 class SlideCapture:
 
-    def __init__(self, dev_id: int=cv2.CAP_ANY, video_filename:str =None):
+    def __init__(self, dev_id: int=cv2.CAP_ANY, video_filename:str =None, threshold_area: int =5000, threshold_bin: int =120):
         """
         カメラのIDを指定する．内臓カメラはだいたい0に設定されているので，webカメラを使いたい場合は1にする．
         今回使うカメラの解像度は1920*1080なので，640*360にリサイズする．
@@ -31,6 +31,17 @@ class SlideCapture:
         self.dev_id = dev_id
         self.cap = cv2.VideoCapture(self.dev_id)
         self.cap_open_check()
+
+        # threshold params
+        self.th_area = threshold_area
+        self.th_bin = threshold_bin
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+        return True
 
     def cap_open_check(self):
         if not self.cap.isOpened():
@@ -108,7 +119,7 @@ class SlideCapture:
         # グレースケール
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
         # 2値化
-        _, bin_frame = cv2.threshold(gray_frame, 100, 255, cv2.THRESH_BINARY)
+        _, bin_frame = cv2.threshold(gray_frame, self.th_bin, 255, cv2.THRESH_BINARY)
         # 輪郭検出
         image, contours, hierarchy = cv2.findContours(bin_frame, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
 
@@ -117,7 +128,7 @@ class SlideCapture:
         for con in contours:
             # 一定の面積でフィルタ
             area = cv2.contourArea(con)
-            if area > 5000:  # TODO: パラメータ
+            if area > self.th_area:
                 approx = cv2.approxPolyDP(con, 0.02 * cv2.arcLength(con, True), True)
                 if len(approx) < 4:
                     continue
@@ -200,7 +211,7 @@ class SlideCapture:
             # グレースケール
             gray_trim_frame = cv2.cvtColor(trim_frame, cv2.COLOR_RGB2GRAY)
             # 2値化
-            _, bin_trim_frame = cv2.threshold(gray_trim_frame, 120, 255, cv2.THRESH_BINARY)
+            _, bin_trim_frame = cv2.threshold(gray_trim_frame, self.th_bin, 255, cv2.THRESH_BINARY)
 
             # TODO: 人などのノイズを検知
 
