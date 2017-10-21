@@ -6,7 +6,7 @@ class SlideCapture:
     def __init__(self, dev_id: int=0):
         """
         カメラのIDを指定する．内臓カメラはだいたい0に設定されているので，webカメラを使いたい場合は1にする．
-        今回使うカメラの解像度は1920*1080
+        今回使うカメラの解像度は1920*1080なので，640*360にリサイズする．
         :param dev_id: カメラのID
         """
         self.dev_id = dev_id
@@ -15,7 +15,7 @@ class SlideCapture:
     def release_camera(self):
         self.cap.release()
 
-    def camera_test(self, img_size=(800, 600)):
+    def camera_test(self, img_size=(640, 360)):
         print('start camera test.')
         print('press esc key for quit.')
         print('press s key for save image')
@@ -24,10 +24,8 @@ class SlideCapture:
             # retは画像を取得成功フラグ
             ret, frame = self.cap.read()
 
-            # フレームをリサイズ
+            # 表示
             frame = cv2.resize(frame, img_size)
-
-            # フレームを表示する
             cv2.imshow('camera capture', frame)
 
             k = cv2.waitKey(1)                  # 1msec待つ
@@ -45,15 +43,15 @@ class SlideCapture:
         size = (int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
                 int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-        video = cv2.VideoWriter(filename, fourcc, fps, (640, 360))
+        video = cv2.VideoWriter(filename, fourcc, fps, size)
 
         is_record = False
         while self.cap.isOpened():
             ret, frame = self.cap.read()
 
             if ret:
-                frame = cv2.resize(frame, (640, 360))
-                cv2.imshow('frame', frame)
+                show_frame = cv2.resize(frame, (640, 360))
+                cv2.imshow('frame', show_frame)
                 if is_record:
                     video.write(frame)
 
@@ -81,6 +79,7 @@ class SlideCapture:
 
             ret, frame = video.read()
             if ret:
+                frame = cv2.resize(frame, (640, 360))
                 cv2.imshow('video', frame)
             else:
                 break
@@ -92,43 +91,64 @@ class SlideCapture:
         video.release()
         cv2.destroyAllWindows()
 
+    def get_slide_position(self):
+        """
+        画像からスライドの位置を特定してその座標，大きさを返す．
+        :return:
+        """
+
+        ret, frame = self.cap.read()
+        if not ret:
+            print('[error] cannot read frame')
+            return False
+
+        # グレースケール
+        gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+        # 2値化
+        _, bin_frame = cv2.threshold(gray_frame, 100, 255, cv2.THRESH_BINARY)
+        # 輪郭検出
+        image, contours, hierarchy = cv2.findContours(bin_frame, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+
+        # 輪郭フィルタ
+        approxs = []
+        for con in contours:
+            # 一定の面積でフィルタ
+            area = cv2.contourArea(con)
+            if area > 5000:  # TODO: パラメータ
+                approx = cv2.approxPolyDP(con, 0.02 * cv2.arcLength(con, True), True)
+                if len(approx) < 4:
+                    continue
+                approxs.append(approx)
+                cv2.drawContours(frame, approx, -1, (255, 0, 0), 3)     # for debug
+
+        # TODO: approxsの中からスライドと思われるものを抽出
+
+        # TODO: スライドの座標，大きさをreturn
+        return True
+
     def monitor_slides(self):
 
         if not self.cap.isOpened():
             print('[error] cannot open camera')
             return False
 
+        # スライドのだいたいの位置を特定
+        slide_position = self.get_slide_position()
+
         while True:
-            # retは画像を取得成功フラグ
             ret, frame = self.cap.read()
             if not ret:
                 print('[error] cannot read frame')
                 continue
 
-            # グレースケール
-            gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+            # TODO: スライド部分をトリミング
 
-            # 2値化 TODO: パラメータ
-            _, bin_frame = cv2.threshold(gray_frame, 100, 255, cv2.THRESH_BINARY)
+            # TODO: 人などのノイズを検知
 
-            # TODO: 人などのノイズ処理
-
-            # スライドの輪郭検出
-            # リファレンス：http://opencv.jp/opencv-2.1/cpp/structural_analysis_and_shape_descriptors.html
-            image, contours, hierarchy = cv2.findContours(bin_frame, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-
-            for con in contours:
-
-                # 一定の面積でフィルタ
-                area = cv2.contourArea(con)
-                if area > 5000:             # TODO: パラメータ
-                    approx = cv2.approxPolyDP(con, 0.02 * cv2.arcLength(con, True), True)
-                    if len(approx) < 4:
-                        continue
-                    cv2.drawContours(frame, approx, -1, (255, 0, 0), 3)
+            # TODO: スライドの差分を検知, 保存
 
             # 表示
-            out_frame = cv2.resize(frame, (800, 600))
+            out_frame = cv2.resize(frame, (640, 360))
             cv2.imshow('camera capture', out_frame)
 
             k = cv2.waitKey(1)                  # 1msec待つ
