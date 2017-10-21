@@ -51,11 +51,11 @@ class QuestionGeneratorOfKeywords():
         return questions
 
 # # キーワードとして ["abc", "def"]　を使っている時
-# questionGenerator = QuestionGeneratorOfKeywords(["abc", "def"])
-# questionsList = []
-# for keyword in questionGenerator.keywords:
-#     questions = questionGenerator.createQuestionsWith(keyword)
-#     questionsList.append(questions)
+# question_generator = QuestionGeneratorOfKeywords(["abc", "def"])
+# questions_list = []
+# for keyword in question_generator.keywords:
+#     questions = question_generator.create_questions_with(keyword)
+#     questions_list.append(questions)
 # print(questionsList)
 # # [['abcの定義を答えよ', 'abcを説明せよ', 'abcを計算せよ', 'abcは誰が考案したか？', 'abcの類義語は何か'],
 # # ['defの定義を答えよ', 'defを説明せよ', 'defを計算せよ', 'defは誰が考案したか？', 'defの類義語は何か']]
