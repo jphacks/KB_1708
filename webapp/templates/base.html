@@ -1,0 +1,19 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'ghostwriter/css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'ghostwriter/css/base.css' %}">
+    {% block additionary_head %}{% endblock %}
+    <title>{%  block title %} this is title {% endblock %}</title>
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'ghostwriter/js/bootstrap.min.js' %}"></script>
+    {% block additionaly_scripts %}{% endblock %}
+</body>
+</html>
