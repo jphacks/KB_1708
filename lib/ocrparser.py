@@ -1,5 +1,5 @@
 
-class ocrparser():
+class Ocrparser():
     '''
     googleocrで画像から文字列を取得して,その文字列情報(resp)をパースする。
     パースした文字列はリストで返す
