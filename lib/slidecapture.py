@@ -155,7 +155,7 @@ class SlideCapture:
 
         return approxs[id_ans]
 
-    def monitor_slides(self):
+    def monitor_slides(self, save_dir: str):
         """
         スライドを監視し，それぞれ1枚ずつjpg画像として保存する．
         :return:
@@ -171,6 +171,18 @@ class SlideCapture:
         trim_to_x = np.max(slide_position, axis=0)[0][0]
         trim_to_y = np.max(slide_position, axis=0)[0][1]
 
+        # ゴミ実装
+        if self.video_cap:  # for debug (from log video file)
+            ret, frame = self.video_cap.read()
+        else:
+            ret, frame = self.cap.read()
+
+        if not ret:
+            raise SlideCaptureError('cannot read frame')
+
+        p_frame = frame
+        num_save = 0
+
         while True:
 
             if self.video_cap:          # for debug (from log video file)
@@ -179,19 +191,34 @@ class SlideCapture:
                 ret, frame = self.cap.read()
 
             if not ret:
-                raise SlideCaptureError('cannot read frame')
+                break
+                # raise SlideCaptureError('cannot read frame')
 
             # スライド部分をトリミング
             trim_frame = frame[trim_from_y:trim_to_y, trim_from_x:trim_to_x]
 
+            # グレースケール
+            gray_trim_frame = cv2.cvtColor(trim_frame, cv2.COLOR_RGB2GRAY)
+            # 2値化
+            _, bin_trim_frame = cv2.threshold(gray_trim_frame, 120, 255, cv2.THRESH_BINARY)
+
             # TODO: 人などのノイズを検知
 
-            # TODO: スライドの差分を検知, 保存
+            # スライドの差分を検知, 保存
+            diff = p_frame.astype(np.int) - frame.astype(np.int)
+            # diff_weight = np.mean(np.abs(diff))         # 平均絶対誤差
+            diff_weight = np.mean(np.square(diff))    # 平均二乗誤差
+            if diff_weight > 400:
+                cv2.imwrite(save_dir+'/'+str(num_save)+'.jpg', frame)
+                num_save += 1
+
+            # print(diff_weight)
+            p_frame = frame
 
             # 表示
             # cv2.drawContours(frame, slide_position, -1, (255, 0, 0), 30)    # for debug
             out_frame = cv2.resize(frame, (640, 360))
-            cv2.imshow('camera capture', trim_frame)
+            cv2.imshow('camera capture', bin_trim_frame)
 
             k = cv2.waitKey(1)                  # 1msec待つ
             if k != -1:                         # 何か押したら終了
