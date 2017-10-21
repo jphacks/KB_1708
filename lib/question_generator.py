@@ -23,8 +23,16 @@ class QuestionGeneratorOfKeywords():
         questions.append(self.calculate(keyword))
         questions.append(self.who_did_create(keyword))
         questions.append(self.what_is_synonym_of(keyword))
-
         return questions
+
+    def convert_keywords_to_qustions_list(self, keywords: [str]):
+        question_generator = QuestionGeneratorOfKeywords(keywords)
+        questions_list = []
+        for keyword in question_generator.keywords:
+            questions = question_generator.create_questions_with(keyword)
+            questions_list.append(questions)
+        # print(questions_list)
+        return questions_list
 
 
     def what_is(self, keyword: str) -> str:
@@ -48,14 +56,7 @@ class QuestionGeneratorOfKeywords():
         return question
 
 
-    def convert_keywords_to_qustions_list(self, keywords: [str]):
-        question_generator = QuestionGeneratorOfKeywords(keywords)
-        questions_list = []
-        for keyword in question_generator.keywords:
-            questions = question_generator.create_questions_with(keyword)
-            questions_list.append(questions)
-        # print(questions_list)
-        return questions_list
+
 
 
             # # キーワードとして ["abc", "def"]　を使っている時
