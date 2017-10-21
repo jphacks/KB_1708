@@ -1,0 +1,53 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="{% static 'common/css/animate.css' %}">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="{% static 'common/css/icomoon.css' %}">
+	<!-- Flexslider  -->
+	<link rel="stylesheet" href="{% static 'common/css/flexslider.css' %}">
+	<!-- Theme style  -->
+	<link rel="stylesheet" href="{% static 'common/css/style.css' %}">
+	<!-- Modernizr JS -->
+	<script rel="stylesheet" src="{% static 'common/js/modernizr-2.6.2.min.js' %}"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="{% static 'common/js/respond.min.js' %}"></script>
+	<![endif]-->
+    <link rel="stylesheet" type="text/css" href="{% static 'common/css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'ghostwriter/css/base.css' %}">
+    {% block additionary_head %}{% endblock %}
+    <title>{%  block title %} this is title {% endblock %}</title>
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
+
+</head>
+<body>
+    <div class="fh5co-loader"></div>
+    <div id="page">
+    {% include 'nav.html' %}
+    {% block content %}{% endblock %}
+    </div>
+
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="icon-arrow-up22"></i></a>
+	</div>
+
+	<!-- jQuery -->
+	<script type="text/javascript" src="{% static 'common/js/jquery.min.js' %}"></script>
+	<!-- jQuery Easing -->
+	<script type="text/javascript" src="{% static 'common/js/jquery.easing.1.3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common/js/bootstrap.min.js' %}"></script>
+	<!-- Waypoints -->
+	<script type="text/javascript" src="{% static 'common/js/jquery.waypoints.min.js' %}"></script>
+	<!-- Flexslider -->
+	<script type="text/javascript" src="{% static 'common/js/jquery.flexslider-min.js' %}"></script>
+	<!-- Main -->
+	<script type="text/javascript" src="{% static 'common/js/main.js' %}"></script>
+    {% block additionaly_scripts %}{% endblock %}
+</body>
+</html>

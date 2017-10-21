@@ -5,3 +5,7 @@ config.ini
 *.pyc
 
 __pycache__/
+
+test.py
+*.jpg
+

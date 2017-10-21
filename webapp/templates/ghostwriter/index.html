@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Ghostwriter{% endblock %}
+
+{% block content %}
+	<div id="fh5co-portfolio">
+    <div class="container-fluid">
+        <div class="row animate-boc">
+            {% for item in object_list %}
+            <div class="col-md-3">
+                <div class="fh5co-portfolio animate-box">
+                    <a href="#">
+                        <div class="portfolio-entry" style="background-image: url({{ item.image.url }});"></div>
+                        <div class="portfolio-text">
+                            <h3>{{ item.title }}</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+{% endblock %}

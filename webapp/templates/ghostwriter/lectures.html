@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Ghostwriter{% endblock %}
+
+{% block content %}
+	<div id="fh5co-portfolio">
+    <div class="container">
+        <div class="row animate-boc">
+        <ul class="list-group">
+            {% for item in object_list %}
+                <a class="list-group-item" href="{% url 'ghostwriter:lecture' item.pk %}">
+                    <h3 class="list-group-item-heading">{{ item.title }}</h3>
+                    <p class="list-group-item-text">day of week: {{ item.get_day_of_week_display }} period: {{ item.get_period_display }}</p>
+                </a>
+            {% endfor %}
+        </ul>
+        </div>
+        <a href="{% url 'ghostwriter:create_lecture' %}"><button class="btn btn-primary">追加</button></a>
+    </div>
+    </div>
+{% endblock %}
