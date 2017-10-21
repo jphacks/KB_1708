@@ -1,1 +1,25 @@
 /* This is a customized css */
+.lecture_header {
+    position: relative;
+}
+
+.create_question_btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.ocr_text {
+    padding: 20px;
+    background-color: aliceblue;
+}
+
+.q_box {
+    background-color: aliceblue;
+    padding: 40px;
+}
+
+.question_text {
+    margin-bottom: 100px;
+    font-size: 2em;
+}

@@ -5,25 +5,33 @@
 {% block content %}
 	<div id="fh5co-portfolio">
     <div class="container">
-        <div class="row animate-boc">
         <ul class="list-group">
-            <a class="list-group-item" href="{% url 'ghostwriter:lecture' item.pk %}">
+            <div class="list-group-item lecture_header" href="{% url 'ghostwriter:lecture' item.pk %}">
                 <h1 class="list-group-item-heading">{{ item.title }}</h1>
                 <p class="list-group-item-text">day of week: {{ item.get_day_of_week_display }} period: {{ item.get_period_display }}</p>
-            </a>
+                <a class="create_question_btn" href="{% url 'ghostwriter:question' item.pk %}"><button class="btn btn-primary">問題作成</button></a>
+            </div>
         </ul>
-            {% for image in item.images.all %}
-            <div class="col-md-3">
-                <div class="fh5co-portfolio animate-box">
-                    <a href="#">
-                        <div class="portfolio-entry" style="background-image: url({{ image.image.url }});"></div>
-                        <div class="portfolio-text">
-                            <h3>{{ image.title }}</h3>
+        <div class="row animate-boc">
+            <div class="col-md-6">
+                <div class="row">
+                    {% for image in item.images.all %}
+                    <div class="col-md-6">
+                        <div class="fh5co-portfolio animate-box">
+                            <a href="#">
+                                <div class="portfolio-entry" style="background-image: url({{ image.image.url }});"></div>
+                                <div class="portfolio-text">
+                                    <h3>{{ image.title }}</h3>
+                                </div>
+                            </a>
                         </div>
-                    </a>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
+            <div class="col-md-6">
+                <p class="ocr_text">{{ item.ocr_text }}</p>
+            </div>
         </div>
     </div>
     </div>

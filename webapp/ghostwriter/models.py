@@ -49,6 +49,7 @@ class Lecture(models.Model):
     title = models.CharField("タイトル", max_length=255)
     day_of_week = models.IntegerField("曜日", choices=__days_of_week)
     period = models.IntegerField('時限', choices=__periods)
+    ocr_text = models.TextField("OCR", null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -59,6 +60,7 @@ class Image(models.Model):
     image = models.ImageField('Image', upload_to=get_image_path)
     lecture = models.ForeignKey(Lecture, related_name="images", null=True, blank=True)
     ocr = models.TextField("OCR", null=True, blank=True)
+    ocr_json = models.TextField("JSON", null=True, blank=True)
 
     @delete_previous_file
     def save(self, force_insert=False, force_update=False, using=None,
