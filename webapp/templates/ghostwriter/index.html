@@ -22,6 +22,11 @@
                 </div>
                 <div class="col-md-9">
                     <div class="row">
+                        {% if object_list|length == 0 %}
+                            <div class="col-md-12">
+                                <h2 class="text-center text-muted">There are no orphan images.</h2>
+                            </div>
+                        {% endif %}
                         {% for img in object_list %}
                             <div class="col-md-4">
                                 <div class="fh5co-portfolio animate-box">
