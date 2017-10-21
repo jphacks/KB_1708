@@ -11,8 +11,14 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
 import configparser
+import djcelery
+import kombu
+
+djcelery.setup_loader()
+BROKER_URL = 'amqp://guest:guest@localhost//'
+CELERY_ALWAYS_EAGER = False
+
 
 config = configparser.RawConfigParser()
 config.read('config.ini')
@@ -28,7 +34,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config['webapp']['SECRET']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -43,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ghostwriter',
+    'djcelery',
+    'kombu.transport.django',
 ]
 
 MIDDLEWARE = [
