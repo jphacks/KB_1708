@@ -98,3 +98,6 @@ ENV/
 # ignore database
 db.sqlite3
 
+# ignore media
+media
+
