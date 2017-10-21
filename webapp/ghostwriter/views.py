@@ -1,5 +1,7 @@
-from django.views.generic import TemplateView,ListView
-from .models import Image,Lecture
+from django.views.generic import TemplateView, ListView, CreateView
+from django.urls import reverse_lazy
+from .models import Image, Lecture
+from .forms import LectureForm
 
 
 class IndexView(TemplateView):
@@ -10,9 +12,11 @@ class IndexView(TemplateView):
         context["object_list"] = Image.objects.filter(lecture__isnull=True).all()
         return context
 
+
 class LectureView(ListView):
     template_name = 'ghostwriter/lectures.html'
     model = Lecture
+
 
 class LectureDetailView(TemplateView):
     template_name = 'ghostwriter/lecture_detail.html'
@@ -22,3 +26,11 @@ class LectureDetailView(TemplateView):
         lec_id = self.kwargs['id']
         context['item'] = Lecture.objects.get(id=lec_id)
         return context
+
+
+class LectureCreateView(CreateView):
+    model = Lecture
+    template_name = 'ghostwriter/lecture_create.html'
+    form_class = LectureForm
+    success_url = reverse_lazy("ghostwriter:lectures")
+
