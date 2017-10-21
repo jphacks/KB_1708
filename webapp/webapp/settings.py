@@ -14,7 +14,7 @@ import os
 
 import configparser
 
-config = configparser.ConfigParser()
+config = configparser.RawConfigParser()
 config.read('config.ini')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
