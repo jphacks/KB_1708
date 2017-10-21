@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Question - Ghostwriter{% endblock %}
+
+{% block content %}
+	<div id="fh5co-portfolio">
+    <div class="container">
+        <ul class="list-group">
+            <div class="list-group-item lecture_header" href="{% url 'ghostwriter:lecture' item.pk %}">
+                <h1 class="list-group-item-heading">{{ item.title }}</h1>
+                <p class="list-group-item-text">day of week: {{ item.get_day_of_week_display }} period: {{ item.get_period_display }}</p>
+                <a class="create_question_btn" href="{% url 'ghostwriter:question' item.pk %}"><button class="btn btn-primary">問題再作成</button></a>
+            </div>
+        </ul>
+        <div class="row animate-boc">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="q_box">
+                    {% for q in questions %}
+                        <p class="question_text">{{ q }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
