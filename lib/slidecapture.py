@@ -135,7 +135,7 @@ class SlideCapture:
             if np.linalg.norm(m_cndd) < np.linalg.norm(u_ans):
                 id_ans = i
 
-        print(approxs[id_ans])
+        # print(approxs[id_ans])
         return approxs[id_ans]
 
     def monitor_slides(self):
