@@ -51,8 +51,7 @@ class Lecture(models.Model):
     period = models.IntegerField('時限', choices=__periods)
 
     def __str__(self):
-        return "{title} - {week} - {period}".format(
-            title=self.title, week=self.get_day_of_week_display, period=self.get_period_display)
+        return self.title
 
 
 class Image(models.Model):

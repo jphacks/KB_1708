@@ -1,23 +1,43 @@
 {% extends 'base.html' %}
-
+{% load staticfiles %}
 {% block title %}Ghostwriter{% endblock %}
 
 {% block content %}
 	<div id="fh5co-portfolio">
     <div class="container-fluid">
         <div class="row animate-boc">
-            {% for item in object_list %}
-            <div class="col-md-3">
-                <div class="fh5co-portfolio animate-box">
-                    <a href="#">
-                        <div class="portfolio-entry" style="background-image: url({{ item.image.url }});"></div>
-                        <div class="portfolio-text">
-                            <h3>{{ item.title }}</h3>
-                        </div>
-                    </a>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group col-md-3">
+                    <ul class="list-group">
+                        <h3 class="list-group-item-heading">{{ form.lecture.label_tag }}</h3>
+                        {% for field in form.lecture %}
+                            <li class="list-group-item">
+                                {{ field }}
+                            </li>
+                        {% endfor %}
+                        {{ form.lecture.errors }}
+                    </ul>
+                    <button class="btn btn-lg btn-primary" type="submit" value="submit">保存</button>
                 </div>
-            </div>
-            {% endfor %}
+                <div class="col-md-9">
+                    <div class="row">
+                        {% for img in object_list %}
+                            <div class="col-md-4">
+                                <div class="fh5co-portfolio animate-box">
+                                    <a class="img_checkbox">
+                                        <div class="portfolio-entry imgcheck" style="background-image: url({{ img.image.url }});"></div>
+                                        <input type="checkbox" name="images" value="{{ img.pk }}">
+                                        <div class="portfolio-text">
+                                            <h3>{{ img.title }}</h3>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     </div>

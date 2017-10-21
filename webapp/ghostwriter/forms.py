@@ -1,5 +1,5 @@
 from django import forms
-from .models import Lecture
+from .models import Lecture, Image
 
 
 class LectureForm(forms.ModelForm):
@@ -11,3 +11,15 @@ class LectureForm(forms.ModelForm):
             "day_of_week": forms.Select(attrs={'class': 'form-control'}),
             "period": forms.Select(attrs={'class': 'form-control'})
         }
+
+
+class LectureImageRelForm(forms.Form):
+    images = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=Image.objects.all()
+    )
+    lecture = forms.ModelChoiceField(
+        widget=forms.RadioSelect,
+        queryset=Lecture.objects.all(),
+        empty_label=None
+    )

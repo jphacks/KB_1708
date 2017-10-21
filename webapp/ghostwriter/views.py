@@ -1,7 +1,8 @@
 from django.views.generic import TemplateView, ListView, CreateView
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from .models import Image, Lecture
-from .forms import LectureForm
+from .forms import LectureForm, LectureImageRelForm
 
 
 class IndexView(TemplateView):
@@ -9,8 +10,21 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
+        form = LectureImageRelForm()
         context["object_list"] = Image.objects.filter(lecture__isnull=True).all()
+        context['form'] = form
         return context
+
+    def post(self, request, *args, **kwards):
+        lec_id = request.POST["lecture"]
+        lecture = Lecture.objects.get(id=lec_id)
+        obj_ids = request.POST["images"]
+        for i in obj_ids:
+            image = Image.objects.get(id=i)
+            image.lecture = lecture
+            image.save()
+        lecture.save()
+        return redirect("ghostwriter:index")
 
 
 class LectureView(ListView):
