@@ -47,13 +47,16 @@ class QuestionGeneratorOfKeywords():
         question = keyword + "の類義語は何か"
         return question
 
-    def convert_keywords_to_qustions_list(self, keywords: str):
+
+    def convert_keywords_to_qustions_list(self, keywords: [str]):
         question_generator = QuestionGeneratorOfKeywords(keywords)
         questions_list = []
         for keyword in question_generator.keywords:
             questions = question_generator.create_questions_with(keyword)
             questions_list.append(questions)
-        print(questions_list)
+        # print(questions_list)
+        return questions_list
+
 
             # # キーワードとして ["abc", "def"]　を使っている時
 # question_generator = QuestionGeneratorOfKeywords(["abc", "def"])
