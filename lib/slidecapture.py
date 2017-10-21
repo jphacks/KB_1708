@@ -1,5 +1,6 @@
 import cv2
 import time
+import numpy as np
 
 
 class SlideCaptureError(Exception):
@@ -72,16 +73,20 @@ class SlideCapture:
 
         return True
 
-    def get_slide_position(self):
+    def get_slide_position(self, filename:str =None):
         """
         画像からスライドの位置を特定してその座標，大きさを返す．
         :return:
         """
 
-        self.cap_open_check()
-        ret, frame = self.cap.read()
-        if not ret:
-            raise SlideCaptureError('cannot read frame')
+        if filename:        # for debug
+            frame = cv2.imread(filename)
+
+        else:
+            self.cap_open_check()
+            ret, frame = self.cap.read()
+            if not ret:
+                raise SlideCaptureError('cannot read frame')
 
         # グレースケール
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
@@ -100,12 +105,38 @@ class SlideCapture:
                 if len(approx) < 4:
                     continue
                 approxs.append(approx)
-                cv2.drawContours(frame, approx, -1, (255, 0, 0), 3)     # for debug
+                cv2.drawContours(frame, approx, -1, (255, 0, 0), 30)     # for debug
 
-        # TODO: approxsの中からスライドと思われるものを抽出
+        # for debug
+        # frame = cv2.resize(frame, (640, 360))
+        # cv2.imshow('slide', frame)
+        # print(len(approxs))
+        # for approx in approxs:
+        #     print(type(approx), approx)
+        # while True:
+        #     k = cv2.waitKey(1)
+        #     if k == ord('q'):
+        #         break
+        # cv2.destroyAllWindows()
 
-        # TODO: スライドの座標，大きさをreturn
-        return True
+        # 一番スライドっぽいのを抽出(より中心に近いものを？)
+        # 中心は960, 540のはず
+        id_ans = 0
+        center = np.array([960, 540])
+        for i, approx in enumerate(approxs):
+            if i == 0:
+                continue
+            m_cndd = np.mean(approx, axis=0)
+            u_cndd = center - m_cndd
+
+            m_ans = np.mean(approxs[id_ans], axis=0)
+            u_ans = center - m_ans
+
+            if np.linalg.norm(m_cndd) < np.linalg.norm(u_ans):
+                id_ans = i
+
+        # print(approxs[id_ans])
+        return approxs[id_ans]
 
     def monitor_slides(self):
         """
@@ -153,6 +184,7 @@ class SlideCapture:
         print('press esc key for quit.')
         print('press s key for save image')
 
+        num_jpg = 0
         while True:
             # retは画像を取得成功フラグ
             ret, frame = self.cap.read()
@@ -160,15 +192,16 @@ class SlideCapture:
                 raise SlideCaptureError('cannot read frame')
 
             # 表示
-            frame = cv2.resize(frame, img_size)
-            cv2.imshow('camera capture', frame)
+            show_frame = cv2.resize(frame, img_size)
+            cv2.imshow('camera capture', show_frame)
 
             k = cv2.waitKey(1)                  # 1msec待つ
             if k == 27:                         # escキーで終了
                 break
             elif k == ord('s'):                 # 保存
-                cv2.imwrite('test_frame.jpg', frame)
-                print('image \'test_frame/jpg\' saved.')
+                cv2.imwrite('log_frame'+str(num_jpg)+'.jpg', frame)
+                num_jpg += 1
+                print('image \'test_frame.jpg\' saved.')
 
         # キャプチャを解放する
         cv2.destroyAllWindows()
