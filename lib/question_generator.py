@@ -1,29 +1,5 @@
 # coding: utf-8
 
-def what_is(keyword: str) -> str:
-    question = keyword + "の定義を答えよ"
-    return question
-
-
-def explain(keyword: str) -> str:
-    question = keyword + "を説明せよ"
-    return question
-
-
-def calculate(keyword: str) -> str:
-    question = keyword + "を計算せよ"
-    return question
-
-
-def who_did_create(keyword: str) -> str:
-    question = keyword + "は誰が考案したか？"
-    return question
-
-
-def what_is_synonym_of(keyword: str) -> str:
-    question = keyword + "の類義語は何か"
-    return question
-
 
 class QuestionGeneratorOfKeywords():
     '''
@@ -42,15 +18,37 @@ class QuestionGeneratorOfKeywords():
         :return questions:　生成した問題文
         '''
         questions = []
-        questions.append(what_is(keyword))
-        questions.append(explain(keyword))
-        questions.append(calculate(keyword))
-        questions.append(who_did_create(keyword))
-        questions.append(what_is_synonym_of(keyword))
+        questions.append(self.what_is(keyword))
+        questions.append(self.explain(keyword))
+        questions.append(self.calculate(keyword))
+        questions.append(self.who_did_create(keyword))
+        questions.append(self.what_is_synonym_of(keyword))
 
         return questions
 
-# # キーワードとして ["abc", "def"]　を使っている時
+
+    def what_is(self, keyword: str) -> str:
+        question = keyword + "の定義を答えよ"
+        return question
+
+    def explain(self, keyword: str) -> str:
+        question = keyword + "を説明せよ"
+        return question
+
+    def calculate(self, keyword: str) -> str:
+        question = keyword + "を計算せよ"
+        return question
+
+    def who_did_create(self, keyword: str) -> str:
+        question = keyword + "は誰が考案したか？"
+        return question
+
+    def what_is_synonym_of(self, keyword: str) -> str:
+        question = keyword + "の類義語は何か"
+        return question
+
+
+            # # キーワードとして ["abc", "def"]　を使っている時
 # question_generator = QuestionGeneratorOfKeywords(["abc", "def"])
 # questions_list = []
 # for keyword in question_generator.keywords:
