@@ -37,7 +37,8 @@ class GoolabWrapper(object):
         return keywords
 
     def generate_selected_num_of_questions(self, keyword, num):
-        all_questions = question_generator.QuestionGeneratorOfKeywords.create_questions_with(keyword)
+        q_gen = question_generator.QuestionGeneratorOfKeywords(keyword)
+        all_questions = q_gen.create_questions_with()
         for i in range(len(all_questions) - num):
             del all_questions[random.randint(0, len(all_questions)-i)]
         return all_questions
