@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+	<div id="fh5co-portfolio">
+    <div class="container">
+        <div class="row animate-boc">
+            <div class="col-md-offset-3 col-md-6">
+                <ul class="list-group">
+                    {% for task in tasks %}
+                        <li class="list-group-item task-record">
+                            <h3 class="list-group-item-heading">{{ task.created_at }} - {{ task.get_type_display }}</h3>
+                            <p class="list-group-item-text">ID: {{ task.task_id }}</p>
+                            {% if task.state == 0 %}
+                                <span class="label label-info">{{ task.get_state_display }}</span>
+                            {% else %}
+                                <span class="label label-danger">{{ task.get_state_display }}</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

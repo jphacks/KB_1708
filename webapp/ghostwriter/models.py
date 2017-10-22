@@ -72,4 +72,20 @@ class Image(models.Model):
         super(Image, self).delete()
 
 
+class TaskRecord(models.Model):
+    _state = (
+        (0, "RUNNING"),
+        (1, "STOPPED")
+    )
+    _type = (
+        (0, "CAPTURE"),
+        (1, "REGISTER")
+    )
+    type = models.IntegerField(choices=_type)
+    state = models.IntegerField(choices=_state)
+    created_at = models.DateTimeField("Created At", auto_now_add=True)
+    task_id = models.CharField("TaskID", max_length=255)
 
+    def __str__(self):
+        return self.created_at.strftime("%Y/%m/%d %H:%M:%S") + "-" + \
+               self.get_type_display() + "-" + self.get_state_display()
