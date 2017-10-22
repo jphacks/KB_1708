@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}講義の追加{% endblock %}
+
+{% block content %}
+	<div id="fh5co-portfolio">
+    <div class="container">
+        <div class="row animate-boc">
+            <div class="col-md-offset-3 col-md-6">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {{ field.errors }}
+                        </div>
+                    {% endfor %}
+                <button class="btn btn-primary" type="submit" value="submit">save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

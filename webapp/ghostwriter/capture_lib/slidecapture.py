@@ -39,7 +39,7 @@ class SlideCapture:
         self.th_diff = threshold_diff
 
         # for pinto
-        time.sleep(5)
+        time.sleep(1)
 
     def __enter__(self):
         return self
@@ -177,12 +177,15 @@ class SlideCapture:
         スライドを監視し，それぞれ1枚ずつjpg画像として保存する．
         :return:
         """
+        print("task executed")
 
-        self.cap_open_check()
+        # self.cap_open_check()
+        print("open checked")
         # cv2.namedWindow("camera capture", cv2.WINDOW_KEEPRATIO | cv2.WINDOW_NORMAL)     # for debug
 
         # スライドのだいたいの位置を特定
         slide_position = self.get_slide_position()
+        print("get_position")
         trim_from_x = np.min(slide_position, axis=0)[0][0]
         trim_from_y = np.min(slide_position, axis=0)[0][1]
         trim_to_x = np.max(slide_position, axis=0)[0][0]
