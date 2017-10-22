@@ -20,7 +20,7 @@ class OcrWrapper(object):
         return json_list
 
     def get_ocr_string(self, j):
-        raw_string_data = json.dumps(j)['textAnnotations'[0][0]]
+        raw_string_data = json.loads(j)['textAnnotations'][0]['description']
         ocr_string = raw_string_data.replace('/n', '')
         return ocr_string
 
@@ -37,7 +37,8 @@ class GoolabWrapper(object):
         return keywords
 
     def generate_selected_num_of_questions(self, keyword, num):
-        all_questions = question_generator.QuestionGeneratorOfKeywords.create_questions_with(keyword)
+        q_gen = question_generator.QuestionGeneratorOfKeywords(keyword)
+        all_questions = q_gen.create_questions_with()
         for i in range(len(all_questions) - num):
             del all_questions[random.randint(0, len(all_questions)-i)]
         return all_questions

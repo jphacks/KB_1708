@@ -23,11 +23,22 @@ class IndexView(TemplateView):
         lecture = Lecture.objects.get(id=lec_id)
         obj_ids = request.POST.getlist("images")
         ocr_text = ""
+        images = []
         for i in obj_ids:
             image = Image.objects.get(id=i)
             image.lecture = lecture
-            ocr_text += image.ocr
             image.save()
+            images.append(image)
+        from .capture_lib import OcrWrapper
+        ocr = OcrWrapper(settings.GCV_API_KEY)
+        paths = [i.image.path for i in images]
+        print(paths)
+        results = ocr.get_ocr_result(paths)
+        print(results)
+        for res, image in zip(results, images):
+            text = ocr.get_ocr_string(res)
+            image.ocr = text
+            ocr_text += text
         lecture.ocr_text = ocr_text
         lecture.save()
         return redirect("ghostwriter:index")
@@ -61,10 +72,14 @@ class LectureQuestionView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(LectureQuestionView, self).get_context_data(**kwargs)
         lec_id = self.kwargs["id"]
-        context['item'] = Lecture.objects.get(id=lec_id)
-        context['questions'] = ["Q1. 今は何時でしょう",
-                                "Q2. タクシオくんのissueはあと3つ残っています．タクシオくんが朝までに寝れる確率を答えなさい",
-                                "Q3. このハッカソンを通じて成長したたつやくんの成長率を求めよ．"]
+        lec = Lecture.objects.get(id=lec_id)
+        context['item'] = lec
+        from .capture_lib import GoolabWrapper
+        import random
+        goo = GoolabWrapper(settings.GOOLAB_API_ID)
+        keywords = goo.get_keywords_from_ocr_string(lec.ocr_text)
+        questions = goo.generate_selected_num_of_questions(random.choice(keywords), 3)
+        context['questions'] = questions
         return context
 
 

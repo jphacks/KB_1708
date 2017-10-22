@@ -1,15 +1,15 @@
 # coding: utf-8
 
 
-class QuestionGeneratorOfKeywords():
+class QuestionGeneratorOfKeywords(object):
     '''
     抽出したキーワードのリストを貰って、問題文を返す
     '''
 
-    def __init__(self, keywords: [str]):
-        self.keywords = keywords
+    def __init__(self, keyword: str):
+        self.keyword = keyword
 
-    def create_questions_with(self, keyword: str) -> [str]:
+    def create_questions_with(self) -> [str]:
         '''
         抽出したキーワードに文章を付加して問題文を生成する
         生成した問題文を”リスト”で返すことに注意
@@ -18,21 +18,21 @@ class QuestionGeneratorOfKeywords():
         :return questions:　生成した問題文
         '''
         questions = []
-        questions.append(self.what_is(keyword))
-        questions.append(self.explain(keyword))
-        questions.append(self.calculate(keyword))
-        questions.append(self.who_did_create(keyword))
-        questions.append(self.what_is_synonym_of(keyword))
+        questions.append(self.what_is(self.keyword))
+        questions.append(self.explain(self.keyword))
+        questions.append(self.calculate(self.keyword))
+        questions.append(self.who_did_create(self.keyword))
+        questions.append(self.what_is_synonym_of(self.keyword))
         return questions
 
-    def convert_keywords_to_qustions_list(self, keywords: [str]):
-        question_generator = QuestionGeneratorOfKeywords(keywords)
-        questions_list = []
-        for keyword in question_generator.keywords:
-            questions = question_generator.create_questions_with(keyword)
-            questions_list.append(questions)
-        # print(questions_list)
-        return questions_list
+    # def convert_keywords_to_qustions_list(self, keywords: [str]):
+    #     question_generator = QuestionGeneratorOfKeywords(keywords)
+    #     questions_list = []
+    #     for keyword in question_generator.keywords:
+    #         questions = question_generator.create_questions_with(keyword)
+    #         questions_list.append(questions)
+    #     # print(questions_list)
+    #     return questions_list
 
 
     def what_is(self, keyword: str) -> str:
