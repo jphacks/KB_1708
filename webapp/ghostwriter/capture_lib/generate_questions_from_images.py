@@ -20,7 +20,7 @@ class OcrWrapper(object):
         return json_list
 
     def get_ocr_string(self, j):
-        raw_string_data = json.dumps(j)['textAnnotations'[0][0]]
+        raw_string_data = json.loads(j)['textAnnotations'][0]['description']
         ocr_string = raw_string_data.replace('/n', '')
         return ocr_string
 
