@@ -1,5 +1,5 @@
 # Ghostwriter
-[![Ghostwriter](https://raw.github.com/GabLeRoux/WebMole/master/ressources/WebMole_Youtube_Video.png)](https://www.youtube.com/watch?v=uViALDC-OAw&feature=youtu.be)
+[![Ghostwriter](./resources/thumbnail.png)](https://www.youtube.com/watch?v=uViALDC-OAw&feature=youtu.be)
 
 ## 製品概要
 ### 試験対策 Tech
