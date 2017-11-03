@@ -78,7 +78,7 @@ class LectureQuestionView(TemplateView):
         import random
         goo = GoolabWrapper(settings.GOOLAB_API_ID)
         keywords = goo.get_keywords_from_ocr_string(lec.ocr_text)
-        questions = goo.generate_selected_num_of_questions(random.choice(keywords), 3)
+        questions = goo.generate_selected_num_of_questions(keywords, 3)
         context['questions'] = questions
         return context
 
