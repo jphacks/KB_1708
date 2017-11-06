@@ -32,9 +32,9 @@ class IndexView(TemplateView):
         from .capture_lib import OcrWrapper
         ocr = OcrWrapper(settings.GCV_API_KEY)
         paths = [i.image.path for i in images]
-        print(paths)
+        #print(paths)
         results = ocr.get_ocr_result(paths)
-        print(results)
+        #print(results)
         for res, image in zip(results, images):
             text = ocr.get_ocr_string(res)
             image.ocr = text
@@ -78,7 +78,7 @@ class LectureQuestionView(TemplateView):
         import random
         goo = GoolabWrapper(settings.GOOLAB_API_ID)
         keywords = goo.get_keywords_from_ocr_string(lec.ocr_text)
-        questions = goo.generate_selected_num_of_questions(random.choice(keywords), 3)
+        questions = goo.generate_selected_num_of_questions(keywords, 3)
         context['questions'] = questions
         return context
 

@@ -31,14 +31,15 @@ class GoolabWrapper(object):
 
     def get_keywords_from_ocr_string(self, ocr_string):
         keywords = []
-        ret = self.goolab.entity(sentence=ocr_string)
+        ret = self.goolab.entity(sentence=ocr_string, class_filter=u"PSN|ORG|ART|DAT")
         for idx in range(len(ret['ne_list'])):
-            keywords.append(ret['ne_list'][idx][0])
+            key = (ret['ne_list'][idx][0], ret['ne_list'][idx][1])
+            keywords.append(key)
         return keywords
 
     def generate_selected_num_of_questions(self, keyword, num):
+        from . import question_generator
         q_gen = question_generator.QuestionGeneratorOfKeywords(keyword)
         all_questions = q_gen.create_questions_with()
-        for i in range(len(all_questions) - num):
-            del all_questions[random.randint(0, len(all_questions)-i)]
-        return all_questions
+        selectes_q = random.sample(all_questions, num)
+        return selectes_q
