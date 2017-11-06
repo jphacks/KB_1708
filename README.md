@@ -52,3 +52,5 @@
 #### 2日間に開発した独自の機能・技術
 * webカメラでスライドを監視し，次のスライドに移ったタイミングで画像を取得する．前後のフレームの差分を平均二乗誤差法によって算出し，一定の差分が生まれたときにスライドが変わったと判断する．誤検知を防ぐために，自動でスライドの位置を検出している．[code](https://github.com/jphacks/KB_1708/blob/master/webapp/ghostwriter/capture_lib/slidecapture.py)
 * gooAPI，Google Cloud Vision APIを駆使し，スライドの画像から試験問題を生成する．[code](https://github.com/jphacks/KB_1708/blob/master/webapp/ghostwriter/capture_lib/generate_questions_from_images.py)
+
+### 独自開発技術（Hack Day後に開発したもの）
