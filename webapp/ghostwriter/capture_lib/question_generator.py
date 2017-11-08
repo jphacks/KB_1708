@@ -1,6 +1,3 @@
-# coding: utf-8
-
-
 class QuestionGeneratorOfKeywords(object):
     '''
     抽出したキーワードのリストを貰って、問題文を返す
@@ -17,12 +14,25 @@ class QuestionGeneratorOfKeywords(object):
         :param keyword:　抽出したキーワード
         :return questions:　生成した問題文
         '''
+        # カテゴリ別で問題を作成
         questions = []
-        questions.append(self.what_is(self.keyword))
-        questions.append(self.explain(self.keyword))
-        questions.append(self.calculate(self.keyword))
-        questions.append(self.who_did_create(self.keyword))
-        questions.append(self.what_is_synonym_of(self.keyword))
+        for key in self.keyword:
+            if key[1] == 'PSN':
+                questions.append(self.what_did(key[0]))
+                questions.append(self.explain(key[0]))
+            elif key[1] == 'ART':
+                questions.append(self.what_is(key[0]))
+                questions.append(self.who_did_create(key[0]))
+            elif key[1] == 'DAT':
+                questions.append(self.when_happen(key[0]))
+            elif key[1] == 'ORG':
+                questions.append(self.when_made(key[0]))
+                questions.append(self.explain(key[0]))
+        # questions.append(self.what_is(self.keyword))
+        # questions.append(self.explain(self.keyword))
+        # questions.append(self.calculate(self.keyword))
+        # questions.append(self.who_did_create(self.keyword))
+        # questions.append(self.what_is_synonym_of(self.keyword))
         return questions
 
     # def convert_keywords_to_qustions_list(self, keywords: [str]):
@@ -34,17 +44,16 @@ class QuestionGeneratorOfKeywords(object):
     #     # print(questions_list)
     #     return questions_list
 
-
     def what_is(self, keyword: str) -> str:
-        question = keyword + "の定義を答えよ"
+        question = keyword + "とは何か？"
         return question
 
     def explain(self, keyword: str) -> str:
-        question = keyword + "を説明せよ"
+        question = keyword + "について説明せよ。"
         return question
 
     def calculate(self, keyword: str) -> str:
-        question = keyword + "を計算せよ"
+        question = keyword + "を計算せよ。"
         return question
 
     def who_did_create(self, keyword: str) -> str:
@@ -52,7 +61,19 @@ class QuestionGeneratorOfKeywords(object):
         return question
 
     def what_is_synonym_of(self, keyword: str) -> str:
-        question = keyword + "の類義語は何か"
+        question = keyword + "の類義語は何か。"
+        return question
+
+    def what_did(self,keyword: str) -> str:
+        question = keyword + 'は何をしたか？'
+        return question
+
+    def when_happen(self, keyword: str) -> str:
+        question = keyword + 'には何が起こったか？'
+        return question
+
+    def when_made(self, keyword: str) -> str:
+        question = keyword + 'はいつ作られたか？'
         return question
 
 
