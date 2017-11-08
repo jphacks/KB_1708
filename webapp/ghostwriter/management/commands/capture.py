@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import os
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from .slidecapture import SlideCapture, SlideCaptureError
+from slidecapture import SlideCapture, SlideCaptureError
 
 
 class Command(BaseCommand):
