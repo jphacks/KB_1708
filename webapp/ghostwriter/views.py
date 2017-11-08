@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.conf import settings
 from .models import Image, Lecture, TaskRecord
 from .forms import LectureForm, LectureImageRelForm
-from .capture_lib import SlideCapture
+from .capture_lib import SlideCapture, SlideCaptureError
 
 
 class IndexView(TemplateView):
@@ -75,7 +75,6 @@ class LectureQuestionView(TemplateView):
         lec = Lecture.objects.get(id=lec_id)
         context['item'] = lec
         from .capture_lib import GoolabWrapper
-        import random
         goo = GoolabWrapper(settings.GOOLAB_API_ID)
         keywords = goo.get_keywords_from_ocr_string(lec.ocr_text)
         questions = goo.generate_selected_num_of_questions(keywords, 3)
@@ -93,8 +92,12 @@ class CameraCalibration(TemplateView):
             task.state = 1
             task.save()
         save_dir = os.path.join(settings.BASE_DIR, "media", "cache")
-        with SlideCapture(1) as cap:
-            cap.calibration(save_dir)
+        context['capture_error'] = False
+        try:
+            with SlideCapture(1) as cap:
+                cap.calibration(save_dir)
+        except SlideCaptureError:
+            context['capture_error'] = True
         return context
 
     def post(self, request, *args, **kwards):
