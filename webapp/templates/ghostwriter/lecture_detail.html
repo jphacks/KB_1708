@@ -18,14 +18,19 @@
                     {% for image in item.images.all %}
                     <div class="col-md-6">
                         <div class="fh5co-portfolio animate-box">
-                            <a href="#">
-                                <div class="portfolio-entry" style="background-image: url({{ image.image.url }});"></div>
-                                <div class="portfolio-text">
-                                    <h3>{{ image.title }}</h3>
-                                </div>
-                            </a>
+                            <div class="portfolio-entry" data-target="#{{ image.title }}" data-toggle="modal" style="background-image: url({{ image.image.url }});cursor: pointer;"></div>
                         </div>
                     </div>
+                        <div class="modal fade" id="{{ image.title }}">
+                            <div class="modal-dialog modal-lg align-center">
+                                <div class="modal-body">
+                                    <img src="{{ image.image.url }}" alt="image_{{ image.title }}" class="img-responsive">
+                                        <div class="modal-footer">
+                                            <button class="btn btn-md btn-primary" data-dismiss="modal">閉じる</button>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
