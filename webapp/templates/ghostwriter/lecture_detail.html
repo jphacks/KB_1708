@@ -18,10 +18,10 @@
                     {% for image in item.images.all %}
                     <div class="col-md-6">
                         <div class="fh5co-portfolio animate-box">
-                            <div class="portfolio-entry" data-target="#{{ image.title }}" data-toggle="modal" style="background-image: url({{ image.image.url }});cursor: pointer;"></div>
+                            <div class="portfolio-entry" data-target="#{{ image.pk }}" data-toggle="modal" style="background-image: url({{ image.image.url }});cursor: pointer;"></div>
                         </div>
                     </div>
-                        <div class="modal fade" id="{{ image.title }}">
+                        <div class="modal fade" id="{{ image.pk }}">
                             <div class="modal-dialog modal-lg align-center">
                                 <div class="modal-body">
                                     <img src="{{ image.image.url }}" alt="image_{{ image.title }}" class="img-responsive">
