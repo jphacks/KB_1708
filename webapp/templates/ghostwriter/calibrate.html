@@ -1,31 +1,31 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
 {% block title %}キャリブレーション{% endblock %}
 
 {% block content %}
 	<div id="fh5co-portfolio">
-    <div class="container">
-        <div class="row animate-boc">
-            <div class="col-md-offset-2 col-md-8">
-                {% if runnning %}
-                <h2>タスク進行中</h2>
-                <p>スライドのキャプチャが進行中です．停止しますか？</p>
-                <form method="post">
-                    {% csrf_token %}
-                    <label><input type="checkbox" name="force_delete" value="0" required>停止</label>
-                <button class="btn btn-primary" type="submit" value="submit">OK</button>
-                </form>
-                {% else %}
-                <h2>キャリブレーション</h2>
-                <p>正確にキャプチャするために，スライドの中央を合わせ，赤い枠内にスライドができるだけ大きく映るようにカメラ位置を調整してください．
-                    再度画像を得る場合はブラウザーをリロードしてください．</p>
-                <form method="post">
-                    {% csrf_token %}
-                    <img class="img-responsive" src="/media/cache/calibration.jpg">
-                <button class="btn btn-primary" type="submit" value="submit">OK</button>
-                </form>
-                {% endif %}
+        <div class="container">
+            <div class="row animate-boc">
+                <div class="col-md-offset-2 col-md-8">
+                    {% if capture_error %}
+                    <h2>エラー</h2>
+                    <div class="capture_error_box">
+                        <h3 class="capture_error">デバイスを使用できませんでした</h3>
+                    </div>
+                    <a class="btn btn-primary" href="{% url 'ghostwriter:index' %}">戻る</a>
+                    {% else %}
+                    <h2>キャリブレーション</h2>
+                    <p>正確にキャプチャするために，スライドの中央を合わせ，赤い枠内にスライドができるだけ大きく映るようにカメラ位置を調整してください．
+                        再度画像を得る場合はブラウザーをリロードしてください．</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <img class="img-responsive" src="/media/cache/calibration.jpg">
+                        <button class="btn btn-primary" type="submit" value="submit">OK</button>
+                    </form>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}
