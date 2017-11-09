@@ -36,6 +36,7 @@ class IndexView(TemplateView):
             text = ocr.get_ocr_string(res)
             image.ocr = text
             image.ocr_json = res
+            image.save()
         for i in lecture.images.all():
             lecture.ocr_text += i.ocr
         lecture.save()
