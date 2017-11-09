@@ -22,21 +22,22 @@ class IndexView(TemplateView):
         lec_id = request.POST["lecture"]
         lecture = Lecture.objects.get(id=lec_id)
         obj_ids = request.POST.getlist("images")
-        ocr_text = ""
+        new_images = []
         for i in obj_ids:
             image = Image.objects.get(id=i)
             image.lecture = lecture
             image.save()
-        images = lecture.images.all()
+            new_images.append(image)
         from .capture_lib import OcrWrapper
         ocr = OcrWrapper(settings.GCV_API_KEY)
-        paths = [i.image.path for i in images]
+        paths = [i.image.path for i in new_images]
         results = ocr.get_ocr_result(paths)
-        for res, image in zip(results, images):
+        for res, image in zip(results, new_images):
             text = ocr.get_ocr_string(res)
             image.ocr = text
-            ocr_text += text
-        lecture.ocr_text = ocr_text
+            image.ocr_json = res
+        for i in lecture.images.all():
+            lecture.ocr_text += i.ocr
         lecture.save()
         return redirect("ghostwriter:index")
 
