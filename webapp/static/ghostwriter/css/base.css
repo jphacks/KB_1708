@@ -9,9 +9,8 @@
     top: 20px;
 }
 
-.ocr_text {
-    padding: 20px;
-    background-color: aliceblue;
+.panel {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1)
 }
 
 .q_box {

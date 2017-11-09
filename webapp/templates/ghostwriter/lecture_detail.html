@@ -35,7 +35,34 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <p class="ocr_text">{{ item.ocr_text }}</p>
+                <div class="panel animate-box">
+                    <div class="panel-heading bg-primary">
+                        <h3>OCRテキスト</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% if item.task_records.all|length > 0 %}
+                            {% if item.task_records.all.0.state != 1 %}
+                            <div class="alert {% if item.task_records.all.0.state == 0 %}alert-warning{% else %}alert-danger{% endif %} alert-dismissible fade in">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                OCR is {{ item.task_records.all.0.get_state_display }}
+                            </div>
+                            {% else %}
+                                <p class="ocr_text">{{ item.ocr_text }}</p>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if item.images.all|length == 0 %}
+                            <div class="alert alert-warning alert-dismissible fade in">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                スライドがまだ紐付けられていません
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
