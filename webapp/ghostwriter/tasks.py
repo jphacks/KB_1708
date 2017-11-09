@@ -73,8 +73,10 @@ def get_ocr_text(self, lecture_id: int, new_image_id: list):
             image.ocr = text
             image.ocr_json = res
             image.save()
+        ocr_text = ""
         for i in lecture.images.all():
-            lecture.ocr_text += i.ocr
+            ocr_text += i.ocr
+        lecture.ocr_text = ocr_text
         record.state = TaskState.DONE.value
     except Exception as e:
         logger = getLogger('OCRTask')
