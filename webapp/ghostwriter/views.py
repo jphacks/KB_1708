@@ -6,6 +6,7 @@ from django.conf import settings
 from .models import Image, Lecture, TaskRecord
 from .forms import LectureForm, LectureImageRelForm
 from .capture_lib import SlideCapture, SlideCaptureError
+from .tasks import get_ocr_text
 
 
 class IndexView(TemplateView):
@@ -20,27 +21,9 @@ class IndexView(TemplateView):
 
     def post(self, request, *args, **kwards):
         lec_id = request.POST["lecture"]
-        lecture = Lecture.objects.get(id=lec_id)
         obj_ids = request.POST.getlist("images")
-        new_images = []
-        for i in obj_ids:
-            image = Image.objects.get(id=i)
-            image.lecture = lecture
-            image.save()
-            new_images.append(image)
-        from .capture_lib import OcrWrapper
-        ocr = OcrWrapper(settings.GCV_API_KEY)
-        paths = [i.image.path for i in new_images]
-        results = ocr.get_ocr_result(paths)
-        for res, image in zip(results, new_images):
-            text = ocr.get_ocr_string(res)
-            image.ocr = text
-            image.ocr_json = res
-            image.save()
-        for i in lecture.images.all():
-            lecture.ocr_text += i.ocr
-        lecture.save()
-        return redirect("ghostwriter:index")
+        get_ocr_text.delay(lec_id, obj_ids)
+        return redirect("ghostwriter:lecture", id=lec_id)
 
 
 class LectureView(ListView):

@@ -2,6 +2,26 @@ from django.db import models
 from django.conf import settings
 import os
 import uuid
+import enum
+
+
+class BaseChoices(enum.Enum):
+    @classmethod
+    def choices(cls):
+        return ((m.value, m.name) for m in cls)
+
+
+class TaskState(BaseChoices):
+    RUNNING = 0
+    DONE = 1
+    FAIL = 2
+
+
+class TaskType(BaseChoices):
+    CAPTURE = 0
+    ANALYSIS = 1
+    OCR = 2
+    REGISTER = 3
 
 
 def delete_previous_file(func):
@@ -77,19 +97,18 @@ class Image(models.Model):
 
 
 class TaskRecord(models.Model):
-    _state = (
-        (0, "RUNNING"),
-        (1, "STOPPED")
-    )
-    _type = (
-        (0, "CAPTURE"),
-        (1, "REGISTER")
-    )
-    type = models.IntegerField(choices=_type)
-    state = models.IntegerField(choices=_state)
+    type = models.IntegerField(choices=TaskType.choices())
+    state = models.IntegerField(choices=TaskState.choices())
     created_at = models.DateTimeField("Created At", auto_now_add=True)
     task_id = models.CharField("TaskID", max_length=255)
+
+    class Meta:
+        ordering = ('-created_at',)
 
     def __str__(self):
         return self.created_at.strftime("%Y/%m/%d %H:%M:%S") + "-" + \
                self.get_type_display() + "-" + self.get_state_display()
+
+
+class OCRTaskRecord(TaskRecord):
+    lecture = models.ForeignKey(Lecture, related_name='task_records')
