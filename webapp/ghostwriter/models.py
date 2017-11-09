@@ -50,6 +50,7 @@ class Lecture(models.Model):
     day_of_week = models.IntegerField("曜日", choices=__days_of_week)
     period = models.IntegerField('時限', choices=__periods)
     ocr_text = models.TextField("OCR", null=True, blank=True)
+    is_parsed = models.BooleanField("Is Parsed", default=True)
 
     def __str__(self):
         return self.title
@@ -70,6 +71,9 @@ class Image(models.Model):
     @delete_previous_file
     def delete(self, using=None, keep_parents=False):
         super(Image, self).delete()
+
+    def __str__(self):
+        return self.title
 
 
 class TaskRecord(models.Model):
