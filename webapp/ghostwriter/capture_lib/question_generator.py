@@ -1,70 +1,65 @@
-# coding: utf-8
+from goolabs import GoolabsAPI
+import random
 
 
-class QuestionGeneratorOfKeywords(object):
-    '''
-    抽出したキーワードのリストを貰って、問題文を返す
-    '''
+class QuestionGenerator(object):
 
-    def __init__(self, keyword: str):
-        self.keyword = keyword
+    def __init__(self, text: str, goolab_api_key: str):
+        """
+        GoolabAPIを使用して文字列から問題作成をするクラス
+        :param text: 問題作成用文字列
+        :param goolab_api_key: goolabのAPI Key
+        """
+        self.text = text
+        self.goolab = GoolabsAPI(goolab_api_key)
+        self.keywords = self.__get_keywords()
+        self.questions = self.__create_questions()
 
-    def create_questions_with(self) -> [str]:
-        '''
+    def __get_keywords(self):
+        """
+        textパラメータからGoolabAPIを使用してキーワード抽出
+        :return: キーワードリスト
+        """
+        keywords = []
+        ret = self.goolab.entity(sentence=self.text, class_filter=u"PSN|ORG|ART|DAT")
+        for idx in range(len(ret['ne_list'])):
+            key = (ret['ne_list'][idx][0], ret['ne_list'][idx][1])
+            keywords.append(key)
+        return keywords
+
+
+    def __create_questions(self):
+        """
         抽出したキーワードに文章を付加して問題文を生成する
         生成した問題文を”リスト”で返すことに注意
 
         :param keyword:　抽出したキーワード
         :return questions:　生成した問題文
-        '''
+        """
+        # カテゴリ別で問題を作成
         questions = []
-        questions.append(self.what_is(self.keyword))
-        questions.append(self.explain(self.keyword))
-        questions.append(self.calculate(self.keyword))
-        questions.append(self.who_did_create(self.keyword))
-        questions.append(self.what_is_synonym_of(self.keyword))
+        for key in self.keywords:
+            if key[1] == 'PSN':
+                questions.append(key[0] + 'は何をしたか？')
+                questions.append(key[0] + 'について説明せよ。')
+            elif key[1] == 'ART':
+                questions.append(key[0] + 'とは何か？')
+                questions.append(key[0] + 'は誰が考案したか？')
+            elif key[1] == 'DAT':
+                questions.append(key[0] + 'には何が起こったか？')
+            elif key[1] == 'ORG':
+                questions.append(key[0] + 'はいつ作られたか？')
+                questions.append(key[0] + 'について説明せよ。')
+
         return questions
 
-    # def convert_keywords_to_qustions_list(self, keywords: [str]):
-    #     question_generator = QuestionGeneratorOfKeywords(keywords)
-    #     questions_list = []
-    #     for keyword in question_generator.keywords:
-    #         questions = question_generator.create_questions_with(keyword)
-    #         questions_list.append(questions)
-    #     # print(questions_list)
-    #     return questions_list
-
-
-    def what_is(self, keyword: str) -> str:
-        question = keyword + "の定義を答えよ"
-        return question
-
-    def explain(self, keyword: str) -> str:
-        question = keyword + "を説明せよ"
-        return question
-
-    def calculate(self, keyword: str) -> str:
-        question = keyword + "を計算せよ"
-        return question
-
-    def who_did_create(self, keyword: str) -> str:
-        question = keyword + "は誰が考案したか？"
-        return question
-
-    def what_is_synonym_of(self, keyword: str) -> str:
-        question = keyword + "の類義語は何か"
-        return question
-
-
-
-
-
-            # # キーワードとして ["abc", "def"]　を使っている時
-# question_generator = QuestionGeneratorOfKeywords(["abc", "def"])
-# questions_list = []
-# for keyword in question_generator.keywords:
-#     questions = question_generator.create_questions_with(keyword)
-#     questions_list.append(questions)
-# print(questionsList)
-# # [['abcの定義を答えよ', 'abcを説明せよ', 'abcを計算せよ', 'abcは誰が考案したか？', 'abcの類義語は何か'],
-# # ['defの定義を答えよ', 'defを説明せよ', 'defを計算せよ', 'defは誰が考案したか？', 'defの類義語は何か']]
+    def get_questions(self, max_questions: int=3):
+        """
+        問題文リストからランダムに問題を返す
+        :param max_questions: 問題数
+        :return: ランダムに選択された問題文リスト
+        """
+        n_ques = len(self.questions)
+        if max_questions > n_ques:
+            max_questions = n_ques
+        return random.sample(self.questions, max_questions)

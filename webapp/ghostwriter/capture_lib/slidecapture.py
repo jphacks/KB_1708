@@ -14,13 +14,17 @@ class SlideCaptureError(Exception):
 class SlideCapture:
 
     def __init__(self, dev_id: int=cv2.CAP_ANY, video_filename:str =None,
-                 threshold_area: int =5000, threshold_bin: int =120, threshold_diff: int =400):
+                 threshold_area: int =5000, threshold_bin: int =120, threshold_diff: int =400,
+                 is_debug: bool = False):
         """
         カメラのIDを指定する．内臓カメラはだいたい0に設定されているので，webカメラを使いたい場合は1にする．
         今回使うカメラの解像度は1920*1080なので，640*360にリサイズする．
         :param dev_id: カメラのID
         :param video_filename: ログのvideoでテストするときに使う
         """
+
+        # set debug mode
+        self.is_debug = is_debug
 
         # video capture init
         if video_filename:
@@ -139,7 +143,8 @@ class SlideCapture:
                 if len(approx) < 4:
                     continue
                 approxs.append(approx)
-                cv2.drawContours(frame, approx, -1, (255, 0, 0), 15)     # for debug
+                if self.is_debug:
+                    cv2.drawContours(frame, approx, -1, (255, 0, 0), 30)     # for debug
 
         # 一番スライドっぽいのを抽出(より中心に近いものを？)
         # 中心は960, 540のはず
@@ -158,17 +163,18 @@ class SlideCapture:
                 id_ans = i
 
         # for debug
-        # out_frame = cv2.resize(frame, (640, 360))
-        # cv2.imshow('camera capture', out_frame)
-        # print(len(approxs))
-        # for approx in approxs:
-        #     print(type(approx), approx)
-        # while True:
-        #     k = cv2.waitKey(1)
-        #     if k == ord('q'):
-        #         break
-        # cv2.destroyAllWindows()
-        # print(approxs[id_ans])
+        if self.is_debug:
+            out_frame = cv2.resize(frame, (640, 360))
+            cv2.imshow('camera capture', out_frame)
+            print('number of canditate is ',len(approxs))
+            for approx in approxs:
+                print(approx)
+            print('most near slide is\n', approxs[id_ans])
+            while True:
+                k = cv2.waitKey(1)
+                if k == ord('q'):
+                    break
+            cv2.destroyAllWindows()
 
         return approxs[id_ans]
 
@@ -177,19 +183,19 @@ class SlideCapture:
         スライドを監視し，それぞれ1枚ずつjpg画像として保存する．
         :return:
         """
-        print("task executed")
-
-        # self.cap_open_check()
-        print("open checked")
-        # cv2.namedWindow("camera capture", cv2.WINDOW_KEEPRATIO | cv2.WINDOW_NORMAL)     # for debug
+        print('start monitoring slides')
 
         # スライドのだいたいの位置を特定
         slide_position = self.get_slide_position()
-        print("get_position")
+        print("get slide position")
         trim_from_x = np.min(slide_position, axis=0)[0][0]
         trim_from_y = np.min(slide_position, axis=0)[0][1]
         trim_to_x = np.max(slide_position, axis=0)[0][0]
         trim_to_y = np.max(slide_position, axis=0)[0][1]
+
+        # [debug] 差分値を保存するためのファイルを生成
+        if self.is_debug:
+            f_diff = open(save_dir+'/frame_diff.csv', 'w')
 
         # ゴミ実装
         if self.video_cap:  # for debug (from log video file)
@@ -232,7 +238,10 @@ class SlideCapture:
                 cv2.imwrite(save_dir+'/'+str(num_save)+'.jpg', frame)
                 num_save += 1
 
-            # print(diff_weight)
+            # [debug] フレーム差分値の保存
+            if self.is_debug:
+                print(diff_weight)
+                f_diff.write(str(diff_weight)+'\n')
             p_frame = frame
 
             # 表示

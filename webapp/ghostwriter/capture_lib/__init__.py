@@ -1,2 +1,3 @@
-from .generate_questions_from_images import OcrWrapper, GoolabWrapper
+from .question_generator import QuestionGenerator
+from .googleocr import GoogleOCR
 from .slidecapture import SlideCapture, SlideCaptureError

@@ -18,9 +18,15 @@
                         {% endfor %}
                         {{ form.lecture.errors }}
                     </ul>
-                    <button class="btn btn-lg btn-primary" type="submit" value="submit">保存</button>
+                    <button id="save-btn" class="btn btn-lg btn-primary disabled" type="submit" value="submit">保存</button>
                 </div>
                 <div class="col-md-9">
+                <div class="row" style="text-align: center">
+                    <div class="col-md-offset-0">
+                        <input id="select-all" class="btn btn-lg btn-primary" type="button" value="全選択" onclick='check_all("images")'>
+                        <input id="purge-all" class="btn btn-lg btn-primary" type="button" value="全解除" onclick='decheck_all("images")'>
+                    </div>
+                </div>
                     <div class="row">
                         {% if object_list|length == 0 %}
                             <div class="col-md-12">
@@ -32,7 +38,7 @@
                                 <div class="fh5co-portfolio animate-box">
                                     <a class="img_checkbox">
                                         <div class="portfolio-entry imgcheck" style="background-image: url({{ img.image.url }});"></div>
-                                        <input type="checkbox" name="images" value="{{ img.pk }}">
+                                        <input type="checkbox" group='images' class="images" name="images" value="{{ img.pk }}">
                                         <div class="portfolio-text">
                                             <h3>{{ img.title }}</h3>
                                         </div>
@@ -46,4 +52,37 @@
         </div>
     </div>
     </div>
+{% endblock %}
+
+{% block additionaly_scripts %}
+<script type="text/javascript">
+var disabled = "disabled";
+var save_btn = $("#save-btn");
+
+function save_enable() {
+    if (save_btn.hasClass(disabled)) {
+        save_btn.toggleClass(disabled);
+    }
+}
+
+function save_disable() {
+    if (!save_btn.hasClass(disabled)) {
+        save_btn.toggleClass(disabled);
+    }
+}
+
+$('input[group="images"]').click(function () {
+    if($('input[group="images"]:checked').length > 0) {
+        save_enable();
+    } else {
+        save_disable();
+    }
+});
+$('#select-all').click(function () {
+    save_enable();
+});
+$('#purge-all').click(function () {
+    save_disable();
+});
+</script>
 {% endblock %}

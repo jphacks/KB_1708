@@ -9,9 +9,8 @@
     top: 20px;
 }
 
-.ocr_text {
-    padding: 20px;
-    background-color: aliceblue;
+.panel {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1)
 }
 
 .q_box {
@@ -22,4 +21,36 @@
 .question_text {
     margin-bottom: 100px;
     font-size: 2em;
+}
+
+.capture_error_box {
+    position: relative;
+    height: 500px;
+    width: 100%;
+    background-color: lightgray;
+    margin-bottom: 20px;
+}
+
+.capture_error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.icon-chevron-left,
+.icon-chevron-right {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    font-size: 200%;
 }

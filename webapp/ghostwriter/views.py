@@ -5,7 +5,8 @@ from django.urls import reverse_lazy
 from django.conf import settings
 from .models import Image, Lecture, TaskRecord
 from .forms import LectureForm, LectureImageRelForm
-from .capture_lib import SlideCapture
+from .capture_lib import SlideCapture, SlideCaptureError
+from .tasks import get_ocr_text
 
 
 class IndexView(TemplateView):
@@ -20,28 +21,9 @@ class IndexView(TemplateView):
 
     def post(self, request, *args, **kwards):
         lec_id = request.POST["lecture"]
-        lecture = Lecture.objects.get(id=lec_id)
         obj_ids = request.POST.getlist("images")
-        ocr_text = ""
-        images = []
-        for i in obj_ids:
-            image = Image.objects.get(id=i)
-            image.lecture = lecture
-            image.save()
-            images.append(image)
-        from .capture_lib import OcrWrapper
-        ocr = OcrWrapper(settings.GCV_API_KEY)
-        paths = [i.image.path for i in images]
-        print(paths)
-        results = ocr.get_ocr_result(paths)
-        print(results)
-        for res, image in zip(results, images):
-            text = ocr.get_ocr_string(res)
-            image.ocr = text
-            ocr_text += text
-        lecture.ocr_text = ocr_text
-        lecture.save()
-        return redirect("ghostwriter:index")
+        get_ocr_text.delay(lec_id, obj_ids)
+        return redirect("ghostwriter:lecture", id=lec_id)
 
 
 class LectureView(ListView):
@@ -74,28 +56,14 @@ class LectureQuestionView(TemplateView):
         lec_id = self.kwargs["id"]
         lec = Lecture.objects.get(id=lec_id)
         context['item'] = lec
-        from .capture_lib import GoolabWrapper
-        import random
-        goo = GoolabWrapper(settings.GOOLAB_API_ID)
-        keywords = goo.get_keywords_from_ocr_string(lec.ocr_text)
-        questions = goo.generate_selected_num_of_questions(random.choice(keywords), 3)
-        context['questions'] = questions
+        from .capture_lib import QuestionGenerator
+        question_gen = QuestionGenerator(goolab_api_key=settings.GOOLAB_API_ID, text=lec.ocr_text)
+        context['questions'] = question_gen.get_questions(max_questions=3)
         return context
 
 
 class CameraCalibration(TemplateView):
     template_name = "ghostwriter/calibrate.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(CameraCalibration, self).get_context_data(**kwargs)
-        tasks = TaskRecord.objects.filter(type=1).filter(state=0).all()
-        for task in tasks:
-            task.state = 1
-            task.save()
-        save_dir = os.path.join(settings.BASE_DIR, "media", "cache")
-        with SlideCapture(1) as cap:
-            cap.calibration(save_dir)
-        return context
 
     def post(self, request, *args, **kwards):
         if request.POST.get('force_delete', None):
@@ -105,12 +73,6 @@ class CameraCalibration(TemplateView):
                 revoke(task.task_id, terminate=True)
             return redirect("ghostwriter:tasks")
         from .tasks import register_image
-        # ここ諦める
-        # 画面キャプチャタスク
-        # capture_task_record = TaskRecord()
-        # task_id = capture_slide.delay().id
-        # capture_task_record.task_id = task_id
-        # capture_task_record.state = 0
         # 画像登録タスク
         register_image_record = TaskRecord()
         register_id = register_image.delay().id

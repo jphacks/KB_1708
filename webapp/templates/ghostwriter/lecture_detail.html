@@ -12,27 +12,93 @@
                 <a class="create_question_btn" href="{% url 'ghostwriter:question' item.pk %}"><button class="btn btn-primary">問題作成</button></a>
             </div>
         </ul>
+
         <div class="row animate-boc">
             <div class="col-md-6">
                 <div class="row">
                     {% for image in item.images.all %}
                     <div class="col-md-6">
                         <div class="fh5co-portfolio animate-box">
-                            <a href="#">
-                                <div class="portfolio-entry" style="background-image: url({{ image.image.url }});"></div>
-                                <div class="portfolio-text">
-                                    <h3>{{ image.title }}</h3>
-                                </div>
-                            </a>
+                            <div class="portfolio-entry" data-target="#modal-{{ image.pk }}" data-toggle="modal" style="background-image: url({{ image.image.url }});cursor: pointer;" onclick="add_active_class('{{ image.pk }}')"></div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
             </div>
             <div class="col-md-6">
-                <p class="ocr_text">{{ item.ocr_text }}</p>
+                <div class="panel animate-box">
+                    <div class="panel-heading bg-primary">
+                        <h3>OCRテキスト</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% if item.task_records.all|length > 0 %}
+                            {% if item.task_records.all.0.state != 1 %}
+                            <div class="alert {% if item.task_records.all.0.state == 0 %}alert-warning{% else %}alert-danger{% endif %} alert-dismissible fade in">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                OCR is {{ item.task_records.all.0.get_state_display }}
+                            </div>
+                            {% else %}
+                                <p class="ocr_text">{{ item.ocr_text|linebreaksbr }}</p>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if item.images.all|length == 0 %}
+                            <div class="alert alert-warning alert-dismissible fade in">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                スライドがまだ紐付けられていません
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     </div>
+    {% for image in item.images.all %}
+        <!-- Modal -->
+        <div class="modal fade" id="modal-{{ image.pk }}" tabindex="-1" role="dialog" aria-labelledby="modal-carousel-label">
+            <div class="modal-dialog align-center" role="img">
+                <div class="modal-content">
+                    <div class="carousel slide" id="modal_carousel_{{ image.pk }}" data-interval="0">
+                        <div class="carousel-inner">
+                            {% for image in item.images.all %}
+                                <div class="item image_{{ image.pk }}">
+                                    <img src="{{ image.image.url }}" alt="image_{{ image.title }}" class="img-responsive">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <a class="left carousel-control" href="#modal_carousel_{{ image.pk }}" data-slide="prev">
+                            <span class="icon icon-chevron-left"></span>
+                        </a>
+                        <a class="right carousel-control" href="#modal_carousel_{{ image.pk }}" data-slide="next">
+                            <span class="icon icon-chevron-right"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-md btn-primary" data-dismiss="modal">閉じる</button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <script>
+    var add_active_class = function (pk) {
+        var  element = $("#modal-"+pk+" .modal-dialog .modal-content .carousel .carousel-inner .image_"+pk);
+        element.addClass("active");
+    }
+    </script>
+{% endblock %}
+{% block additionaly_scripts %}
+<script>
+    $(function () {
+        $('.modal').on('hide.bs.modal', function () {
+            $('.item').removeClass('active');
+
+        });
+    });
+</script>
 {% endblock %}
