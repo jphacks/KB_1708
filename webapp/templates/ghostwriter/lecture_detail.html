@@ -49,7 +49,7 @@
                                 OCR is {{ item.task_records.all.0.get_state_display }}
                             </div>
                             {% else %}
-                                <p class="ocr_text">{{ item.ocr_text }}</p>
+                                <p class="ocr_text">{{ item.ocr_text|linebreaksbr }}</p>
                             {% endif %}
                         {% endif %}
 
