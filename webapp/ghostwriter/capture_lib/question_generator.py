@@ -53,10 +53,13 @@ class QuestionGenerator(object):
 
         return questions
 
-    def get_questions(self, num_questions: int=3):
+    def get_questions(self, max_questions: int=3):
         """
         問題文リストからランダムに問題を返す
-        :param num_questions: 問題数
+        :param max_questions: 問題数
         :return: ランダムに選択された問題文リスト
         """
-        return random.sample(self.questions, num_questions)
+        n_ques = len(self.questions)
+        if max_questions > n_ques:
+            max_questions = n_ques
+        return random.sample(self.questions, max_questions)
