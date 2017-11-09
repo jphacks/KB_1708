@@ -32,9 +32,7 @@ class IndexView(TemplateView):
         from .capture_lib import OcrWrapper
         ocr = OcrWrapper(settings.GCV_API_KEY)
         paths = [i.image.path for i in images]
-        #print(paths)
         results = ocr.get_ocr_result(paths)
-        #print(results)
         for res, image in zip(results, images):
             text = ocr.get_ocr_string(res)
             image.ocr = text
