@@ -48,3 +48,26 @@ class GoogleOCR:
                                  headers=self.headers,
                                  timeout=timeout)
         return response
+
+    def get_jsons(self, img_paths: [str]):
+        """
+        OCRにかけた結果(json)のリストを返す
+        :param img_paths: 解析する画像リスト
+        :return: jsonリスト
+        """
+        jsons = []
+        res = self.recognize_image(img_paths=img_paths)
+        if res.status_code != 200 or res.json().get('error'):
+            pass
+        else:
+            for idx, resp in enumerate(res.json().get('responses')):
+                jsons.append(json.dumps(resp))
+        return jsons
+
+    def parse_description(self, json_str: str):
+        """
+        jsonからdescription要素だけを取り出してリストで返す
+        :param json_str: json
+        :return: description要素
+        """
+        return json.loads(json_str)['textAnnotations'][0]['description']

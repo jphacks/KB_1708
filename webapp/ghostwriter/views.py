@@ -56,31 +56,14 @@ class LectureQuestionView(TemplateView):
         lec_id = self.kwargs["id"]
         lec = Lecture.objects.get(id=lec_id)
         context['item'] = lec
-        from .capture_lib import GoolabWrapper
-        goo = GoolabWrapper(settings.GOOLAB_API_ID)
-        keywords = goo.get_keywords_from_ocr_string(lec.ocr_text)
-        questions = goo.generate_selected_num_of_questions(keywords, 3)
-        context['questions'] = questions
+        from .capture_lib import QuestionGenerator
+        question_gen = QuestionGenerator(goolab_api_key=settings.GOOLAB_API_ID, text=lec.ocr_text)
+        context['questions'] = question_gen.get_questions(max_questions=3)
         return context
 
 
 class CameraCalibration(TemplateView):
     template_name = "ghostwriter/calibrate.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(CameraCalibration, self).get_context_data(**kwargs)
-        tasks = TaskRecord.objects.filter(type=1).filter(state=0).all()
-        for task in tasks:
-            task.state = 1
-            task.save()
-        save_dir = os.path.join(settings.BASE_DIR, "media", "cache")
-        context['capture_error'] = False
-        try:
-            with SlideCapture(1) as cap:
-                cap.calibration(save_dir)
-        except SlideCaptureError:
-            context['capture_error'] = True
-        return context
 
     def post(self, request, *args, **kwards):
         if request.POST.get('force_delete', None):
@@ -90,12 +73,6 @@ class CameraCalibration(TemplateView):
                 revoke(task.task_id, terminate=True)
             return redirect("ghostwriter:tasks")
         from .tasks import register_image
-        # ここ諦める
-        # 画面キャプチャタスク
-        # capture_task_record = TaskRecord()
-        # task_id = capture_slide.delay().id
-        # capture_task_record.task_id = task_id
-        # capture_task_record.state = 0
         # 画像登録タスク
         register_image_record = TaskRecord()
         register_id = register_image.delay().id
