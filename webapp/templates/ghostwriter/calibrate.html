@@ -16,16 +16,92 @@
                     <a class="btn btn-primary" href="{% url 'ghostwriter:index' %}">戻る</a>
                     {% else %}
                     <h2>キャリブレーション</h2>
-                    <p>正確にキャプチャするために，スライドの中央を合わせ，赤い枠内にスライドができるだけ大きく映るようにカメラ位置を調整してください．
-                        再度画像を得る場合はブラウザーをリロードしてください．</p>
-                    <form method="post">
-                        {% csrf_token %}
-                        <img class="img-responsive" src="/media/cache/calibration.jpg">
-                        <button class="btn btn-primary" type="submit" value="submit">OK</button>
-                    </form>
+                        <div>
+                            <select id="select">
+                                <option value="">カメラを選択してください</option>
+                            </select>
+                            <div>
+                                <video id="video"></video>
+                            </div>
+                        </div>
+                        <a class="btn btn-primary" href="{% url 'ghostwriter:index' %}">戻る</a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block additionaly_scripts %}
+    <script>
+        window.onload = function () {
+            'use strict';
+
+            // getUserMedia非対応チェック
+            if (navigator.mediaDevices.getUserMedia === undefined || navigator.mediaDevices.enumerateDevices === undefined) {
+                console.error('getUserMedia is not supported by the browser.');
+                return;
+            }
+
+            // 接続されているカメラとマイクのMediaStreamオブジェクトを取得する
+            navigator.mediaDevices.enumerateDevices().then(function (sourcesInfo) {
+                // 取得できたカメラとマイクを含むデバイスからカメラだけをフィルターする
+                var videoSroucesArray = sourcesInfo.filter(function (elem) {
+                    return elem.kind == 'videoinput';
+                });
+                render(videoSroucesArray);
+            });
+
+            /**
+             * カメラを選択するセレクトボックスを組み立てる
+             */
+            function render(videoSroucesArray) {
+                var $selectBox = document.querySelector('#select')
+                videoSroucesArray.forEach(function (source, idx) {
+                    var label = source.label !== "" ? source.label : ("カメラ" + idx);
+                    $selectBox.insertAdjacentHTML("beforeend", "<option value='" + source.deviceId + "'>" + label + "</option>");
+                });
+                return this;
+            }
+
+            var currentStream;
+
+            /**
+             * カメラの再生を開始する
+             */
+            function start(e) {
+                // 既にカメラと接続していたら停止
+                if (currentStream) {
+                    currentStream.getVideoTracks().forEach(function (devise) {
+                        devise.stop();
+                    });
+                    currentStream = null;
+                }
+
+                if (e.target.value === "") {
+                    return;
+                }
+
+                var constraints = {
+                    video: {
+                        optional: [{
+                            sourceId: e.target.value
+                        }]
+                    }
+                };
+                // Video と Audioのキャプチャを開始
+                navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+                    currentStream = stream; // カメラを切り替えた時に停止するため格納
+                    var $video = document.querySelector('#video');
+                    $video.src = window.URL.createObjectURL(stream);
+                    $video.play(); // firefox用
+                }, function () {
+                    console.log("error:" + arguments);
+                })
+            }
+
+            var selectBox = document.querySelector('#select');
+            selectBox.addEventListener('change', start, false);
+        };
+    </script>
 {% endblock %}
