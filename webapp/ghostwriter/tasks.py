@@ -50,7 +50,7 @@ def get_ocr_text(self, lecture_id: int, new_image_id: list):
     from logging import getLogger
     from django.conf import settings
     from .models import Lecture, Image, TaskState, TaskType, OCRTaskRecord
-    from .capture_lib import OcrWrapper
+    from .capture_lib import GoogleOCR
     lecture = Lecture.objects.get(id=lecture_id)
     record = OCRTaskRecord.objects.create(
         task_id=self.request.id,
@@ -58,7 +58,7 @@ def get_ocr_text(self, lecture_id: int, new_image_id: list):
         type=TaskType.OCR.value,
         lecture=lecture
     )
-    ocr = OcrWrapper(settings.GCV_API_KEY)
+    ocr = GoogleOCR(api_key=settings.GCV_API_KEY)
     new_images = list()
     for i in new_image_id:
         image = Image.objects.get(id=i)
@@ -67,9 +67,9 @@ def get_ocr_text(self, lecture_id: int, new_image_id: list):
         new_images.append(image)
     paths = [i.image.path for i in new_images]
     try:
-        results = ocr.get_ocr_result(paths)
+        results = ocr.get_jsons(paths)
         for res, image in zip(results, new_images):
-            text = ocr.get_ocr_string(res)
+            text = ocr.parse_description(res)
             image.ocr = text
             image.ocr_json = res
             image.save()
