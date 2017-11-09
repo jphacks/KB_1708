@@ -67,21 +67,6 @@ class LectureQuestionView(TemplateView):
 class CameraCalibration(TemplateView):
     template_name = "ghostwriter/calibrate.html"
 
-    def get_context_data(self, **kwargs):
-        context = super(CameraCalibration, self).get_context_data(**kwargs)
-        tasks = TaskRecord.objects.filter(type=1).filter(state=0).all()
-        for task in tasks:
-            task.state = 1
-            task.save()
-        save_dir = os.path.join(settings.BASE_DIR, "media", "cache")
-        context['capture_error'] = False
-        try:
-            with SlideCapture(1) as cap:
-                cap.calibration(save_dir)
-        except SlideCaptureError:
-            context['capture_error'] = True
-        return context
-
     def post(self, request, *args, **kwards):
         if request.POST.get('force_delete', None):
             from celery.task.control import revoke
