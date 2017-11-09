@@ -90,6 +90,12 @@ def get_ocr_text(self, lecture_id: int, new_image_id: list):
         lecture.save()
 
 
+@task
+def empty_task():
+    from time import sleep
+    sleep(10)
+
+
 def on_task_revoked(*args, **kwargs):
     print(str(kwargs))
     print('task_revoked')
