@@ -18,6 +18,7 @@
                     <h2>Calibration Slides</h2>
                         <div>
                             <select id="select">
+
                         <form method="post" class="form-group">
                             {% csrf_token %}
                             <label for="select_camera_id">カメラ</label>
@@ -29,6 +30,7 @@
                             </div>
                         </div>
                         <a class="btn-lg custom_btn" href="{% url 'ghostwriter:index' %}">Back</a>
+
                             <button class="btn btn-primary" type="submit" value="submit">Capture Start</button>
                         </form>
                     {% endif %}
