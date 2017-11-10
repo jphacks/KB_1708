@@ -14,6 +14,11 @@
                             <p class="list-group-item-text">ID: {{ task.task_id }}</p>
                             {% if task.state == 0 %}
                                 <span class="label label-info">{{ task.get_state_display }}</span>
+                                <form method="post" class="form-group">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ task.task_id }}" name="task_id">
+                                    <button class="btn btn-primary" type="submit" value="submit">Stop</button>
+                                </form>
                             {% else %}
                                 <span class="label label-danger">{{ task.get_state_display }}</span>
                             {% endif %}
