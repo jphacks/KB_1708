@@ -1,12 +1,12 @@
 import os
+from subprocess import Popen
 from django.views.generic import TemplateView, ListView, CreateView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.conf import settings
-from .models import Image, Lecture, TaskRecord
+from .models import Image, Lecture, TaskRecord, TaskState, TaskType
 from .forms import LectureForm, LectureImageRelForm
-from .capture_lib import SlideCapture, SlideCaptureError
-from .tasks import get_ocr_text
+from .tasks import get_ocr_text, empty_task
 
 
 class IndexView(TemplateView):
@@ -66,20 +66,15 @@ class CameraCalibration(TemplateView):
     template_name = "ghostwriter/calibrate.html"
 
     def post(self, request, *args, **kwards):
-        if request.POST.get('force_delete', None):
-            from celery.task.control import revoke
-            task = TaskRecord.objects.filter(type=1).filter(state=0).first()
-            if task:
-                revoke(task.task_id, terminate=True)
-            return redirect("ghostwriter:tasks")
-        from .tasks import register_image
-        # 画像登録タスク
-        register_image_record = TaskRecord()
-        register_id = register_image.delay().id
-        register_image_record.task_id = register_id
-        register_image_record.state = 0
-        register_image_record.type = 1
-        register_image_record.save()
+        task_id = empty_task.delay().id
+        TaskRecord.objects.create(
+            state=TaskState.RUNNING.value,
+            type=TaskType.CAPTURE.value,
+            task_id=task_id
+        )
+        p = Popen("python manage.py capture", shell=True, close_fds=False)
+        with open("process.pid", "w") as fp:
+            fp.write(str(p.pid))
         return redirect("ghostwriter:tasks")
 
 
@@ -90,3 +85,19 @@ class TaskView(TemplateView):
         context = super(TaskView, self).get_context_data(**kwargs)
         context["tasks"] = TaskRecord.objects.all().order_by('-id')
         return context
+
+    def post(self, request, *args, **kwards):
+        task_id = request.POST.get("task_id")
+        task_record = TaskRecord.objects.get(task_id=task_id)
+        try:
+            with open("process.pid", "r") as fp:
+                from signal import SIGINT
+                pid = fp.read()
+            os.kill(int(pid), SIGINT)
+            task_record.state = TaskState.DONE.value
+            return redirect('ghostwriter:index')
+        except Exception:
+            task_record.state = TaskState.FAIL.value
+            return redirect('ghostwriter:tasks')
+        finally:
+            task_record.save()
