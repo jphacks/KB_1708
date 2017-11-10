@@ -18,14 +18,27 @@
                         {% endfor %}
                         {{ form.lecture.errors }}
                     </ul>
-                    <button id="save-btn" class="btn btn-lg btn-primary disabled" type="submit" value="submit">保存</button>
+                    <button id="save-btn" class="custom_btn btn-lg disabled" type="submit" value="submit">
+                        <span class="icon-save"></span> Add Images
+                    </button>
                 </div>
                 <div class="col-md-9">
                 <div class="row" style="text-align: center">
-                    <div class="col-md-offset-0">
-                        <input id="select-all" class="btn btn-lg btn-primary" type="button" value="全選択" onclick='check_all("images")'>
-                        <input id="purge-all" class="btn btn-lg btn-primary" type="button" value="全解除" onclick='decheck_all("images")'>
+                    {% if object_list|length > 0 %}
+                    <div class="col-xs-6 menu-1">
+                        <li id="select-all" class="custom_btn btn-lg" type="button" value="全選択" onclick='check_all("images")' style="cursor: pointer">
+                            <span class="icon-checkbox-checked"></span>  Checked　All
+                        </li>
                     </div>
+                        <div class="col-xs-6 menu-1">
+                            <li id="purge-all" class="custom_btn btn-lg" type="button" value="全解除" onclick='decheck_all("images")' style="cursor: pointer">
+                                <span class="icon-checkbox-unchecked"></span>  Unchecked All
+                            </li>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if object_list|length == 0 %}
+                    {% endif %}
                 </div>
                     <div class="row">
                         {% if object_list|length == 0 %}

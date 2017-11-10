@@ -54,3 +54,30 @@
     transform: translate(-50%, -50%);
     font-size: 200%;
 }
+
+.fh5co-portfolio .portfolio-text {
+    width: 100%;
+    float: left;
+    padding: 10px;
+}
+
+.custom_btn {
+    display: inline-block;
+    padding: 10px 25px;
+    text-decoration: none;
+    color: white;
+    border-radius: 30px;
+    transition: .4s;
+    background: #DD356E;
+    border: solid #DD356E;
+    margin-bottom: 50px;
+}
+
+.custom_btn:hover {
+    background: white;
+    color: #DD356E;
+}
+
+.fh5co-nav ul li.btn-cta a span{
+    padding: 10px 10px;
+}
