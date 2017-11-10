@@ -15,7 +15,7 @@
                     </div>
                     <a class="btn btn-primary" href="{% url 'ghostwriter:index' %}">戻る</a>
                     {% else %}
-                    <h2>キャリブレーション</h2>
+                    <h2>Calibration Slides</h2>
                         <div>
                             <select id="select">
                                 <option value="">カメラを選択してください</option>
@@ -24,7 +24,7 @@
                                 <video id="video"></video>
                             </div>
                         </div>
-                        <a class="btn btn-primary" href="{% url 'ghostwriter:index' %}">戻る</a>
+                        <a class="btn-lg custom_btn" href="{% url 'ghostwriter:index' %}">Back</a>
                     {% endif %}
                 </div>
             </div>
