@@ -26,40 +26,36 @@
                 <div class="row" style="text-align: center">
                     {% if object_list|length > 0 %}
                     <div class="col-xs-6 menu-1">
-                        <li id="select-all" class="custom_btn btn-lg" type="button" value="全選択" onclick='check_all("images")' style="cursor: pointer">
+                        <div id="select-all" class="custom_btn btn-lg" type="button" value="全選択" onclick='check_all("images")' style="cursor: pointer">
                             <span class="icon-checkbox-checked"></span>  Checked　All
-                        </li>
+                        </div>
                     </div>
                         <div class="col-xs-6 menu-1">
-                            <li id="purge-all" class="custom_btn btn-lg" type="button" value="全解除" onclick='decheck_all("images")' style="cursor: pointer">
+                            <div id="purge-all" class="custom_btn btn-lg" type="button" value="全解除" onclick='decheck_all("images")' style="cursor: pointer">
                                 <span class="icon-checkbox-unchecked"></span>  Unchecked All
-                            </li>
+                            </div>
                         </div>
-                    </div>
                     {% endif %}
-                </div>
-                    <div class="row">
-                        <div class="col-md-8">
-                            {% if object_list|length == 0 %}
-                                <div class="col-md-12">
-                                    <h2 class="text-center text-muted">There are no orphan images.</h2>
-                                </div>
-                            {% endif %}
-                            {% for img in object_list %}
-                                <div class="col-md-4">
-                                   <div class="fh5co-portfolio animate-box">
-                                       <a class="img_checkbox">
-                                          <div class="portfolio-entry imgcheck" style="background-image: url({{ img.image.url }});"></div>
-                                             <input type="checkbox" group='images' class="images" name="images" value="{{ img.pk }}">
-                                           <div class="portfolio-text">
-                                               <h3>{{ img.title }}</h3>
-                                           </div>
-                                       </a>
-                                   </div>
-                                </div>
-                            {% endfor %}
+                    {% if object_list|length == 0 %}
+                        <div class="col-md-12">
+                            <h2 class="text-center text-muted">There are no orphan images.</h2>
                         </div>
+                    {% endif %}
+                    {% for img in object_list %}
+                        <div class="col-md-4">
+                           <div class="fh5co-portfolio animate-box">
+                               <a class="img_checkbox">
+                                  <div class="portfolio-entry imgcheck" style="background-image: url({{ img.image.url }});"></div>
+                                     <input type="checkbox" group='images' class="images" name="images" value="{{ img.pk }}">
+                                   <div class="portfolio-text">
+                                       <h3>{{ img.title }}</h3>
+                                   </div>
+                               </a>
+                           </div>
+                        </div>
+                    {% endfor %}
                     </div>
+                </div>
             </form>
         </div>
     </div>
