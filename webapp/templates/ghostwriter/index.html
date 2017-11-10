@@ -18,7 +18,7 @@
                         {% endfor %}
                         {{ form.lecture.errors }}
                     </ul>
-                    <button id="save-btn" class="custom_btn btn-lg disabled" type="submit" value="submit">
+                    <button id="save-btn" class="custom_btn btn-lg" disabled="disabled" type="submit" value="submit">
                         <span class="icon-pushpin"></span> Connect
                     </button>
                 </div>
@@ -43,15 +43,15 @@
                     {% endif %}
                     {% for img in object_list %}
                         <div class="col-md-4">
-                           <div class="fh5co-portfolio animate-box">
-                               <a class="img_checkbox">
-                                  <div class="portfolio-entry imgcheck" style="background-image: url({{ img.image.url }});"></div>
-                                     <input type="checkbox" group='images' class="images" name="images" value="{{ img.pk }}">
-                                   <div class="portfolio-text">
-                                       <h3>{{ img.title }}</h3>
-                                   </div>
+                            <div class="fh5co-portfolio animate-box">
+                                <a class="img_checkbox">
+                                     <div class="portfolio-entry imgcheck" style="background-image: url({{ img.image.url }});"></div>
+                                     <input type="checkbox" group='images' class="images form-control" name="images" value="{{ img.pk }}">
+                                     <div class="portfolio-text">
+                                         <h3>{{ img.title }}</h3>
+                                     </div>
                                </a>
-                           </div>
+                            </div>
                         </div>
                     {% endfor %}
                     </div>
@@ -68,14 +68,14 @@ var disabled = "disabled";
 var save_btn = $("#save-btn");
 
 function save_enable() {
-    if (save_btn.hasClass(disabled)) {
-        save_btn.toggleClass(disabled);
+    if (save_btn.attr(disabled)) {
+        save_btn.removeAttr(disabled);
     }
 }
 
 function save_disable() {
-    if (!save_btn.hasClass(disabled)) {
-        save_btn.toggleClass(disabled);
+    if (!save_btn.attr(disabled)) {
+        save_btn.attr(disabled, disabled);
     }
 }
 
