@@ -81,3 +81,12 @@
 .fh5co-nav ul li.btn-cta a span{
     padding: 10px 10px;
 }
+
+.panel-heading{
+    padding: 35px 20px;
+}
+
+.panel-heading div h2{
+    position: absolute;
+    transform: translate(0%, -50%);
+}

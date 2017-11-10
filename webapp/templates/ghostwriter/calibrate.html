@@ -15,7 +15,10 @@
                     </div>
                     <a class="btn btn-primary" href="{% url 'ghostwriter:index' %}">戻る</a>
                     {% else %}
-                    <h2>キャリブレーション</h2>
+                    <h2>Calibration Slides</h2>
+                        <div>
+                            <select id="select">
+
                         <form method="post" class="form-group">
                             {% csrf_token %}
                             <label for="select_camera_id">カメラ</label>
@@ -25,7 +28,9 @@
                             <div>
                                 <video id="video"></video>
                             </div>
-                            <a class="btn btn-primary" href="{% url 'ghostwriter:index' %}">戻る</a>
+                        </div>
+                        <a class="btn-lg custom_btn" href="{% url 'ghostwriter:index' %}">Back</a>
+
                             <button class="btn btn-primary" type="submit" value="submit">Capture Start</button>
                         </form>
                     {% endif %}
