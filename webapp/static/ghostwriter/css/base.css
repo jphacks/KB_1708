@@ -91,6 +91,10 @@
     transform: translate(0%, -50%);
 }
 
+button#save-btn[disabled]{
+  cursor: not-allowed;
+}
+
 .tab-content .tab-pane{
     padding: 20px;
 }

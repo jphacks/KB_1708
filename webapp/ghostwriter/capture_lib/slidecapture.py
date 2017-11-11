@@ -149,7 +149,9 @@ class SlideCapture:
         # 一番スライドっぽいのを抽出(より中心に近いものを？)
         # 中心は960, 540のはず
         id_ans = 0
-        center = np.array([960, 540])
+        height = frame.shape[0]
+        width = frame.shape[1]
+        center = np.array([width/2, height/2])
         for i, approx in enumerate(approxs):
             if i == 0:
                 continue
