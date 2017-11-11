@@ -210,8 +210,11 @@ class SlideCapture:
         if not ret:
             raise SlideCaptureError('cannot read frame')
 
+        # 1枚目を保存
+        cv2.imwrite(save_dir + '/' + '0.jpg', frame)
+
         p_frame = frame
-        num_save = 0
+        num_save = 1
         cnt_loop = 0
 
         while True:
