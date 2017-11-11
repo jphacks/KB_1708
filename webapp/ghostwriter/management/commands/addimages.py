@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 import os
-from logging import getLogger
+from logging import getLogger, basicConfig, INFO
 from django.conf import settings
 from datetime import datetime
 from django.core.files import File
@@ -14,6 +14,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         logger = getLogger("AddImages")
+        basicConfig(level=INFO)
         files = check_file("media/cache", ".jpg")
         now = datetime.now()
         cache_dir = os.path.join(settings.MEDIA_ROOT, 'cahche')

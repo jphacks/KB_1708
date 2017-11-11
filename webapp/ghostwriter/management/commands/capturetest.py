@@ -3,7 +3,7 @@ import os
 from logging import getLogger
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from slidecapture import SlideCapture
+from ghostwriter.capture_lib.slidecapture import SlideCapture
 
 
 class Command(BaseCommand):

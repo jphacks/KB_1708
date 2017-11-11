@@ -5,13 +5,13 @@ from ghostwriter.models import Lecture
 
 
 class Command(BaseCommand):
-    help = "Capture slides from video file."
+    help = "Remove image from specified lecture"
 
     def add_arguments(self, parser):
         parser.add_argument('lecture', type=str, help='Specify lecture name')
 
     def handle(self, *args, **options):
-        logger = getLogger("AddImages")
+        logger = getLogger("PurgeImages")
         basicConfig(level=INFO)
         lec_title = options['lecture']
         lectures = Lecture.objects.filter(title=lec_title).all()
