@@ -149,7 +149,9 @@ class SlideCapture:
         # 一番スライドっぽいのを抽出(より中心に近いものを？)
         # 中心は960, 540のはず
         id_ans = 0
-        center = np.array([960, 540])
+        height = frame.shape[0]
+        width = frame.shape[1]
+        center = np.array([width/2, height/2])
         for i, approx in enumerate(approxs):
             if i == 0:
                 continue
@@ -178,9 +180,11 @@ class SlideCapture:
 
         return approxs[id_ans]
 
-    def monitor_slides(self, save_dir: str):
+    def monitor_slides(self, save_dir: str, num_skip: int=0):
         """
         スライドを監視し，それぞれ1枚ずつjpg画像として保存する．
+        :param save_dir: 出力ファイルを保存するディレクトリパス
+        :param num_skip: 飛ばすフレーム間隔数
         :return:
         """
         print('start monitoring slides')
@@ -206,8 +210,12 @@ class SlideCapture:
         if not ret:
             raise SlideCaptureError('cannot read frame')
 
+        # 1枚目を保存
+        cv2.imwrite(save_dir + '/' + '0.jpg', frame)
+
         p_frame = frame
-        num_save = 0
+        num_save = 1
+        cnt_loop = 0
 
         while True:
 
@@ -219,6 +227,13 @@ class SlideCapture:
             if not ret:
                 break
                 # raise SlideCaptureError('cannot read frame')
+
+            # スライドスキップ
+            cnt_loop += 1
+            if num_skip != 0:
+                if cnt_loop <= num_skip:
+                    continue
+            cnt_loop = 0
 
             # スライド部分をトリミング
             trim_frame = frame[trim_from_y:trim_to_y, trim_from_x:trim_to_x]

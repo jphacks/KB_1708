@@ -17,21 +17,20 @@
                     {% else %}
                     <h2>Calibration Slides</h2>
                         <div>
-                            <select id="select">
-
-                        <form method="post" class="form-group">
-                            {% csrf_token %}
-                            <label for="select_camera_id">カメラ</label>
-                            <select id="select_camera_id" class="form-control" name="select_camera_id">
-                                <option value="">カメラを選択してください</option>
-                            </select>
-                            <div>
-                                <video id="video"></video>
-                            </div>
+                            <form method="post" class="form-group">
+                                {% csrf_token %}
+                                <label for="select_camera_id">カメラ</label>
+                                <select id="select_camera_id" class="form-control" name="select_camera_id">
+                                    <option value="">カメラを選択してください</option>
+                                </select>
+                                <div>
+                                    <video id="video"></video>
+                                </div>
+                            </form>
                         </div>
                         <a class="btn-lg custom_btn" href="{% url 'ghostwriter:index' %}">Back</a>
 
-                            <button class="btn btn-primary" type="submit" value="submit">Capture Start</button>
+                            <button class="btn-lg custom_btn" type="submit" value="submit"><span class="icon-play22"></span> Capture Start</button>
                         </form>
                     {% endif %}
                 </div>
