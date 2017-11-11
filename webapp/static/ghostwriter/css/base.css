@@ -90,3 +90,7 @@
     position: absolute;
     transform: translate(0%, -50%);
 }
+
+button#save-btn[disabled]{
+  cursor: not-allowed;
+}
