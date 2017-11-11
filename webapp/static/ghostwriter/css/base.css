@@ -96,6 +96,11 @@
     background-color: #eeeeee;
 }
 
+.guideline .guideline-title{
+    font-size: 54px;
+    padding-top: 20px;
+}
+
 .guideline .guideline-item{
     border-radius: 100%;
     width: 150px;
