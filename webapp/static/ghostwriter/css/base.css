@@ -91,7 +91,6 @@
     transform: translate(0%, -50%);
 }
 
-
 .guideline{
     background-color: #eeeeee;
 }
@@ -131,4 +130,3 @@ p.guideline-title{
 button#save-btn[disabled]{
   cursor: not-allowed;
 }
-
