@@ -110,6 +110,10 @@
     margin-bottom: 30px
 }
 
+.icon-description{
+    padding-bottom: 50px;
+}
+
 .guideline .guideline-item .guideline-item-icon{
     font-size: 54pt;
     position: relative;
