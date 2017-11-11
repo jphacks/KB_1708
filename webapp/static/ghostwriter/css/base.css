@@ -112,6 +112,42 @@ footer {
     transform: translate(0%, -50%);
 }
 
+.guideline{
+    background-color: #eeeeee;
+}
+
+p.guideline-title{
+    font-size: 45px;
+    padding-top: 10px;
+}
+
+.guideline .guideline-item{
+    border-radius: 100%;
+    width: 150px;
+    height: 150px;
+    background-color: #fee856;
+    margin-top: 30px;
+    margin-bottom: 30px
+}
+
+.icon-description{
+    padding-bottom: 30px;
+}
+
+.guideline .guideline-item .guideline-item-icon{
+    font-size: 54pt;
+    position: relative;
+    top: 40px;
+    left: 20px
+}
+
+.guideline .guideline-item .guideline-item-arrow{
+    font-size: 20pt;
+    position: relative;
+    top: 10px;
+    left: 160px
+}
+
 button#save-btn[disabled]{
     cursor: not-allowed;
 }
