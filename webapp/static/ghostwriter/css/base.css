@@ -90,3 +90,7 @@
     position: absolute;
     transform: translate(0%, -50%);
 }
+
+.tab-content .tab-pane{
+    padding: 20px;
+}

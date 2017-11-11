@@ -37,7 +37,11 @@ class LectureDetailView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(LectureDetailView, self).get_context_data(**kwargs)
         lec_id = self.kwargs['id']
-        context['item'] = Lecture.objects.get(id=lec_id)
+        lec = Lecture.objects.get(id=lec_id)
+        from .capture_lib import QuestionGenerator
+        question_gen = QuestionGenerator(goolab_api_key=settings.GOOLAB_API_ID, text=lec.ocr_text)
+        context['item'] = lec
+        context['questions'] = question_gen
         return context
 
 
