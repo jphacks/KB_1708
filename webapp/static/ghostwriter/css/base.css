@@ -1,4 +1,25 @@
 /* This is a customized css */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 120px;
+}
+
+footer {
+    position: absolute;
+    min-height: 60px;
+    width: 100%;
+    margin: 0;
+    bottom: 0;
+    background-color: #EEEEEE;
+}
+
+.text-muted {
+    margin: 20px 0;
+}
 .lecture_header {
     position: relative;
 }
@@ -92,9 +113,13 @@
 }
 
 button#save-btn[disabled]{
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
 
 .tab-content .tab-pane{
     padding: 20px;
+}
+
+#invisible {
+    display: none;
 }
