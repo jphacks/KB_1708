@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% block additionary_head %}
+<link rel="stylesheet" type="text/css" href="{% static 'ghostwriter/css/calibrate.css' %}">
+{% endblock %}
 
 {% block title %}キャリブレーション{% endblock %}
 
@@ -23,8 +26,11 @@
                                 <select id="select_camera_id" class="form-control" name="select_camera_id">
                                     <option value="">カメラを選択してください</option>
                                 </select>
-                                <div>
+                                <div id="capture-content">
                                     <video id="video"></video>
+                                    <div id="slide-target"></div>
+                                    <div id="target-vertical"></div>
+                                    <div id="target-horizon"></div>
                                 </div>
                             </form>
                         </div>
@@ -41,6 +47,7 @@
 
 {% block additionaly_scripts %}
     <script>
+
         window.onload = function () {
             'use strict';
 
@@ -102,7 +109,7 @@
                     currentStream = stream; // カメラを切り替えた時に停止するため格納
                     var $video = document.querySelector('#video');
                     $video.src = window.URL.createObjectURL(stream);
-                    $video.play(); // firefox用
+                    $video.play(); // firefox
                 }, function () {
                     console.log("error:" + arguments);
                 })
