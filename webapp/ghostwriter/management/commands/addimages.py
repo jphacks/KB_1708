@@ -15,9 +15,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         logger = getLogger("AddImages")
         basicConfig(level=INFO)
-        files = check_file("media/cache", ".jpg")
+        cache_dir = os.path.join(settings.MEDIA_ROOT, 'cache')
+        files = check_file(cache_dir, ".jpg")
         now = datetime.now()
-        cache_dir = os.path.join(settings.MEDIA_ROOT, 'cahche')
         for i, file in enumerate(files):
             image_path = os.path.join(cache_dir, file)
             with open(image_path, "rb") as jpg:
