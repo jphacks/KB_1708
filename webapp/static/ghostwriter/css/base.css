@@ -1,4 +1,25 @@
 /* This is a customized css */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 120px;
+}
+
+footer {
+    position: absolute;
+    min-height: 60px;
+    width: 100%;
+    margin: 0;
+    bottom: 0;
+    background-color: #EEEEEE;
+}
+
+.text-muted {
+    margin: 20px 0;
+}
 .lecture_header {
     position: relative;
 }
@@ -53,4 +74,52 @@
     -o-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     font-size: 200%;
+}
+
+.fh5co-portfolio .portfolio-text {
+    width: 100%;
+    float: left;
+    padding: 10px;
+}
+
+.custom_btn {
+    display: inline-block;
+    padding: 10px 25px;
+    text-decoration: none;
+    color: white;
+    border-radius: 30px;
+    transition: .4s;
+    background: #DD356E;
+    border: solid #DD356E;
+    margin-bottom: 50px;
+}
+
+.custom_btn:hover {
+    background: white;
+    color: #DD356E;
+}
+
+.fh5co-nav ul li.btn-cta a span{
+    padding: 10px 10px;
+}
+
+.panel-heading{
+    padding: 35px 20px;
+}
+
+.panel-heading div h2{
+    position: absolute;
+    transform: translate(0%, -50%);
+}
+
+button#save-btn[disabled]{
+    cursor: not-allowed;
+}
+
+.tab-content .tab-pane{
+    padding: 20px;
+}
+
+#invisible {
+    display: none;
 }

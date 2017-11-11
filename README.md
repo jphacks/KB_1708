@@ -54,3 +54,4 @@
 * gooAPI，Google Cloud Vision APIを駆使し，スライドの画像から試験問題を生成する．[code](https://github.com/jphacks/KB_1708/blob/master/webapp/ghostwriter/capture_lib/generate_questions_from_images.py)
 
 ### 独自開発技術（Hack Day後に開発したもの）
+- リアルタイムキャリブレーション

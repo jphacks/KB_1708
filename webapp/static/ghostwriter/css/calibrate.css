@@ -1,0 +1,38 @@
+#capture-content {
+    width: 750px;
+    position: relative;
+}
+
+#video {
+    width: 750px;
+    height: 560px;
+}
+
+#slide-target {
+    position: absolute;
+    width: 670px;
+    height: 480px;
+    top: 40px;
+    left: 40px;
+    border: solid 3px red;
+}
+
+#target-vertical {
+    width: 1px;
+    height: 40px;
+
+}
+
+#target-horizon {
+    width: 40px;
+    height: 1px;
+}
+
+#target-vertical,
+#target-horizon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: solid 1px red;
+}
