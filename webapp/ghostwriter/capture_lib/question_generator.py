@@ -21,6 +21,9 @@ class QuestionGenerator(object):
         :return: キーワードリスト
         """
         keywords = []
+        if not self.text:
+            return []
+
         ret = self.goolab.entity(sentence=self.text, class_filter=u"PSN|ORG|ART|DAT")
         for idx in range(len(ret['ne_list'])):
             key = (ret['ne_list'][idx][0], ret['ne_list'][idx][1])
