@@ -180,9 +180,11 @@ class SlideCapture:
 
         return approxs[id_ans]
 
-    def monitor_slides(self, save_dir: str):
+    def monitor_slides(self, save_dir: str, num_skip: int=0):
         """
         スライドを監視し，それぞれ1枚ずつjpg画像として保存する．
+        :param save_dir: 出力ファイルを保存するディレクトリパス
+        :param num_skip: 飛ばすフレーム間隔数
         :return:
         """
         print('start monitoring slides')
@@ -210,6 +212,7 @@ class SlideCapture:
 
         p_frame = frame
         num_save = 0
+        cnt_loop = 0
 
         while True:
 
@@ -221,6 +224,13 @@ class SlideCapture:
             if not ret:
                 break
                 # raise SlideCaptureError('cannot read frame')
+
+            # スライドスキップ
+            cnt_loop += 1
+            if num_skip != 0:
+                if cnt_loop <= num_skip:
+                    continue
+            cnt_loop = 0
 
             # スライド部分をトリミング
             trim_frame = frame[trim_from_y:trim_to_y, trim_from_x:trim_to_x]
