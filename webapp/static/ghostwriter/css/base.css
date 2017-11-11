@@ -91,6 +91,10 @@
     transform: translate(0%, -50%);
 }
 
+.guideline div{
+    background-color: #dddddd;
+}
+
 .guideline-item div{
     border-radius: 100%;
     width: 150px;
