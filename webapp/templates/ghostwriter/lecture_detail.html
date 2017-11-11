@@ -57,38 +57,10 @@
                             {% endif %}
                         </div>
                         <div class="tab-pane" id="tab2">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>Keyword</th><th>Type</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for keyword in questions.keywords %}
-                                        <tr>
-                                            <td>
-                                                {{ keyword.0 }}
-                                            </td>
-                                            <td>
-                                                {% if keyword.1 == "ORG"%}
-                                                    Organization
-                                                {% endif %}
-                                                {% if keyword.1 == "ART"%}
-                                                  Artifact
-                                                {% endif %}
-                                                {% if keyword.1 == "PSN"%}
-                                                   Person
-                                                {% endif %}
-                                                {% if keyword.1 == "DAT"%}
-                                                    Date
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+                            {% for keyword in questions.keywords %}
+                                <p>・{{ keyword.0 }}</p>
+                            {% endfor %}
+
                         </div>
                     </div>
                 </div>
