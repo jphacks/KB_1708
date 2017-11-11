@@ -91,13 +91,32 @@
     transform: translate(0%, -50%);
 }
 
-.guideline div{
-    background-color: #dddddd;
+
+.guideline{
+    background-color: #eeeeee;
 }
 
-.guideline-item div{
+.guideline .guideline-item{
     border-radius: 100%;
     width: 150px;
     height: 150px;
-    background-color: #ffffcc;
+    background-color: #fee856;
+    margin-top: 30px;
+    margin-bottom: 30px
 }
+
+.guideline .guideline-item .guideline-item-icon{
+    font-size: 54pt;
+    position: relative;
+    top: 35px;
+    left: 16px
+}
+
+.guideline .guideline-item .guideline-item-arrow{
+    font-size: 20pt;
+    position: relative;
+    top: 10px;
+    left: 160px
+}
+
+
