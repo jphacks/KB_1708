@@ -23,8 +23,8 @@ class IndexView(TemplateView):
     def post(self, request, *args, **kwards):
         lec_id = request.POST["lecture"]
         obj_ids = request.POST.getlist("images")
-        get_ocr_text.delay(lec_id, obj_ids)
-        return redirect("ghostwriter:lecture", id=lec_id)
+        # get_ocr_text.delay(lec_id, obj_ids)
+        return redirect("ghostwriter:lecture", id=2)
 
 
 class LectureView(ListView):
@@ -77,9 +77,9 @@ class CameraCalibration(TemplateView):
             type=TaskType.CAPTURE.value,
             task_id=task_id
         )
-        p = Popen("python manage.py capture", shell=True, close_fds=False)
-        with open("process.pid", "w") as fp:
-            fp.write(str(p.pid))
+        # p = Popen("python manage.py capture", shell=True, close_fds=False)
+        # with open("process.pid", "w") as fp:
+        #     fp.write(str(p.pid))
         return redirect("ghostwriter:tasks")
 
 
@@ -95,12 +95,12 @@ class TaskView(TemplateView):
         task_id = request.POST.get("task_id")
         task_record = TaskRecord.objects.get(task_id=task_id)
         try:
-            with open("process.pid", "r") as fp:
-                from signal import SIGINT
-                pid = fp.read()
-            os.kill(int(pid), SIGINT)
+            # with open("process.pid", "r") as fp:
+            #     from signal import SIGINT
+            #     pid = fp.read()
+            # os.kill(int(pid), SIGINT)
             task_record.state = TaskState.DONE.value
-            register_image.delay()
+            # register_image.delay()
             sleep(1)
             return redirect('ghostwriter:index')
         except Exception as e:
