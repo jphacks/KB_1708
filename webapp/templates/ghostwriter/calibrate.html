@@ -16,20 +16,16 @@
                     <a class="btn btn-primary" href="{% url 'ghostwriter:index' %}">戻る</a>
                     {% else %}
                     <h2>Calibration Slides</h2>
-                        <div>
-                            <form method="post" class="form-group">
-                                {% csrf_token %}
-                                <label for="select_camera_id">カメラ</label>
-                                <select id="select_camera_id" class="form-control" name="select_camera_id">
-                                    <option value="">カメラを選択してください</option>
-                                </select>
-                                <div>
-                                    <video id="video"></video>
-                                </div>
-                            </form>
-                        </div>
-                        <a class="btn-lg custom_btn" href="{% url 'ghostwriter:index' %}">Back</a>
-
+                        <form method="post" class="form-group">
+                            {% csrf_token %}
+                            <label for="select_camera_id">カメラ</label>
+                            <select id="select_camera_id" class="form-control" name="select_camera_id">
+                                <option value="">カメラを選択してください</option>
+                            </select>
+                            <div>
+                                <video id="video"></video>
+                            </div>
+                            <a class="btn-lg custom_btn" href="{% url 'ghostwriter:index' %}">Back</a>
                             <button class="btn-lg custom_btn" type="submit" value="submit"><span class="icon-play22"></span> Capture Start</button>
                         </form>
                     {% endif %}

@@ -26,23 +26,38 @@ def check_file(path='./', ext=''):
     return ch_e
 
 
-@task
-def register_image():
+@task(bind=True)
+def register_image(self):
     # register image
     import os
     from django.core.files import File
+    from django.conf import settings
     from datetime import datetime
-    from .models import Image
-    files = check_file("media/cache", ".jpg")
+    from .models import Image, TaskState, TaskType, TaskRecord
+    record = TaskRecord(
+        task_id=self.request.id,
+        state=TaskState.RUNNING.value,
+        type=TaskType.REGISTER.value
+    )
+    record.save()
+    cache_dir = os.path.join(settings.MEDIA_ROOT, 'cache')
+    files = check_file(cache_dir, ".jpg")
     now = datetime.now()
-    for i, file in enumerate(files):
-        with open("media/cache/" + file, "rb") as jpg:
-            django_file = File(jpg)
-            img = Image()
-            img.image.save(now.strftime("%Y-%m-%d %H:%M:%S") + "-" + str(i) + ".jpg", django_file, save=True)
-            img.title = now.strftime("%Y-%m-%d %H:%M:%S") + "-" + str(i)
-            img.save()
-        os.remove("media/cache/" + file)
+    try:
+        for i, file in enumerate(files):
+            image_path = os.path.join(cache_dir, file)
+            with open(image_path, "rb") as jpg:
+                django_file = File(jpg)
+                img = Image()
+                img.image.save(now.strftime("%Y-%m-%d %H:%M:%S") + "-" + str(i) + ".jpg", django_file, save=True)
+                img.title = now.strftime("%Y-%m-%d %H:%M:%S") + "-" + str(i)
+                img.save()
+            os.remove(image_path)
+        record.state = TaskState.DONE.value
+    except Exception:
+        record.state = TaskState.FAIL.value
+    finally:
+        record.save()
 
 
 @task(bind=True)

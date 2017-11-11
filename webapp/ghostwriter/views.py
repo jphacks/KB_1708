@@ -4,9 +4,10 @@ from django.views.generic import TemplateView, ListView, CreateView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.conf import settings
+from time import sleep
 from .models import Image, Lecture, TaskRecord, TaskState, TaskType
 from .forms import LectureForm, LectureImageRelForm
-from .tasks import get_ocr_text, empty_task
+from .tasks import get_ocr_text, empty_task, register_image
 
 
 class IndexView(TemplateView):
@@ -99,8 +100,11 @@ class TaskView(TemplateView):
                 pid = fp.read()
             os.kill(int(pid), SIGINT)
             task_record.state = TaskState.DONE.value
+            register_image.delay()
+            sleep(1)
             return redirect('ghostwriter:index')
-        except Exception:
+        except Exception as e:
+            print(e.args)
             task_record.state = TaskState.FAIL.value
             return redirect('ghostwriter:tasks')
         finally:
