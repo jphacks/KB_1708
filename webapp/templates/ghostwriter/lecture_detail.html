@@ -25,35 +25,43 @@
                     {% endfor %}
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="panel animate-box">
-                    <div class="panel-heading bg-primary">
-                        <div>
-                            <h2 style="color: white"><b>OCR Text</b></h2>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        {% if item.task_records.all|length > 0 %}
-                            {% if item.task_records.all.0.state != 1 %}
-                            <div class="alert {% if item.task_records.all.0.state == 0 %}alert-warning{% else %}alert-danger{% endif %} alert-dismissible fade in">
-                                <button type="button" class="close" data-dismiss="alert">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                OCR is {{ item.task_records.all.0.get_state_display }}
-                            </div>
-                            {% else %}
-                                <p class="ocr_text">{{ item.ocr_text|linebreaksbr }}</p>
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab1" data-toggle="tab">OCR Text</a></li>
+                        <li><a href="#tab2" data-toggle="tab">Extracted keywords</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1">
+                            {% if item.task_records.all|length > 0 %}
+                                {% if item.task_records.all.0.state != 1 %}
+                                    <div class="alert {% if item.task_records.all.0.state == 0 %}alert-warning{% else %}alert-danger{% endif %} alert-dismissible fade in">
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        OCR is {{ item.task_records.all.0.get_state_display }}
+                                    </div>
+                                {% else %}
+                                    <p class="ocr_text">{{ item.ocr_text|linebreaksbr }}</p>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
 
-                        {% if item.images.all|length == 0 %}
-                            <div class="alert alert-warning alert-dismissible fade in">
-                                <button type="button" class="close" data-dismiss="alert">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                スライドがまだ紐付けられていません
-                            </div>
-                        {% endif %}
+                            {% if item.images.all|length == 0 %}
+                                <div class="alert alert-warning alert-dismissible fade in">
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    スライドがまだ紐付けられていません
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="tab-pane" id="tab2">
+                            {% for keyword in questions.keywords %}
+                                <p>・{{ keyword.0 }}</p>
+                            {% endfor %}
+
+                        </div>
                     </div>
                 </div>
             </div>
