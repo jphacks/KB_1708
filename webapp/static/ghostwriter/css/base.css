@@ -128,4 +128,7 @@ p.guideline-title{
     left: 160px
 }
 
+button#save-btn[disabled]{
+  cursor: not-allowed;
+}
 
