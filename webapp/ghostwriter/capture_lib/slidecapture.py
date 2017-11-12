@@ -166,6 +166,7 @@ class SlideCapture:
 
         # for debug
         if self.is_debug:
+            cv2.drawContours(frame, approxs[id_ans], -1, (0, 0, 255), 30)
             out_frame = cv2.resize(frame, (640, 360))
             cv2.imshow('camera capture', out_frame)
             print('number of canditate is ',len(approxs))
